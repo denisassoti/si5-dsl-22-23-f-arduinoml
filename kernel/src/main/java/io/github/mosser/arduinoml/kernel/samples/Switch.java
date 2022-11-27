@@ -6,11 +6,13 @@ import io.github.mosser.arduinoml.kernel.generator.ToWiring;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.*;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class Switch {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		// Declaring elementary bricks
 		Sensor button = new Sensor();
@@ -44,17 +46,21 @@ public class Switch {
 		// Creating transitions
 		Transition on2off = new Transition();
 		on2off.setNext(off);
-		on2off.setSensor(button);
-		on2off.setValue(SIGNAL.HIGH);
+			UnaryExpression expression = new UnaryExpression();
+			expression.setSensor(button);
+			expression.setValue(SIGNAL.HIGH);
+		on2off.setExpressions(Arrays.asList(expression));
 
 		Transition off2on = new Transition();
 		off2on.setNext(on);
-		off2on.setSensor(button);
-		off2on.setValue(SIGNAL.HIGH);
+			UnaryExpression expression2 = new UnaryExpression();
+			expression2.setSensor(button);
+			expression2.setValue(SIGNAL.HIGH);
+		off2on.setExpressions(Arrays.asList(expression2));
 
 		// Binding transitions to states
-		on.setTransition(on2off);
-		off.setTransition(off2on);
+		on.setTransitions(Arrays.asList(on2off));
+		off.setTransitions(Arrays.asList(off2on));
 
 		// Building the App
 		App theSwitch = new App();
@@ -67,8 +73,8 @@ public class Switch {
 		Visitor codeGenerator = new ToWiring();
 		theSwitch.accept(codeGenerator);
 
-		// Printing the generated code on the console
-		System.out.println(codeGenerator.getResult());
+		// generate the target code and write it into a file
+		codeGenerator.generateInoFile();
 	}
 
 }

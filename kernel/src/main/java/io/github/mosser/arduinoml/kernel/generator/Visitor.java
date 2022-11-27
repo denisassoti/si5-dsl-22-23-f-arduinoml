@@ -4,6 +4,9 @@ import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.structural.*;
 import io.github.mosser.arduinoml.kernel.App;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +21,9 @@ public abstract class Visitor<T> {
 	public abstract void visit(Actuator actuator);
 	public abstract void visit(Sensor sensor);
 
+	public abstract void visit(BinaryExpression expression);
+	public abstract void visit(UnaryExpression expression);
+
 
 	/***********************
 	 ** Helper mechanisms **
@@ -29,6 +35,14 @@ public abstract class Visitor<T> {
 
 	public T getResult() {
 		return result;
+	}
+
+	public void generateInoFile() throws IOException {
+		String filename = "generated_" + System.currentTimeMillis() + ".ino";
+		BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/generated/"+filename));
+		writer.write(result.toString());
+		writer.flush();
+		writer.close();
 	}
 
 }
