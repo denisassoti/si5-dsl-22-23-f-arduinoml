@@ -1,6 +1,8 @@
 import io.github.mosser.arduinoml.externals.antlr.ModelBuilder;
 import io.github.mosser.arduinoml.externals.antlr.StopErrorListener;
 import io.github.mosser.arduinoml.externals.antlr.grammar.*;
+import io.github.mosser.arduinoml.externals.antlr.grammar.ArduinomlLexer;
+import io.github.mosser.arduinoml.externals.antlr.grammar.ArduinomlParser;
 import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.generator.ToWiring;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
@@ -37,7 +39,7 @@ public class Main {
         lexer.removeErrorListeners();
         lexer.addErrorListener(new StopErrorListener());
 
-        ArduinomlParser   parser  = new ArduinomlParser(new CommonTokenStream(lexer));
+        ArduinomlParser parser  = new ArduinomlParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners();
         parser.addErrorListener(new StopErrorListener());
 
