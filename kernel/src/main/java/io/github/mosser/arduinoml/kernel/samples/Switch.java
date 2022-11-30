@@ -49,14 +49,14 @@ public class Switch {
 			UnaryExpression expression = new UnaryExpression();
 			expression.setSensor(button);
 			expression.setValue(SIGNAL.HIGH);
-		on2off.setExpressions(Arrays.asList(expression));
+		on2off.setExpression(expression);
 
 		Transition off2on = new Transition();
 		off2on.setNext(on);
 			UnaryExpression expression2 = new UnaryExpression();
 			expression2.setSensor(button);
 			expression2.setValue(SIGNAL.HIGH);
-		off2on.setExpressions(Arrays.asList(expression2));
+		off2on.setExpression(expression2);
 
 		// Binding transitions to states
 		on.setTransitions(Arrays.asList(on2off));

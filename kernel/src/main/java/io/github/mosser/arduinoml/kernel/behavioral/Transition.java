@@ -9,16 +9,16 @@ import java.util.List;
 
 public class Transition implements Visitable {
 
-	private List<Expression> expressions = new ArrayList<>();
+	private Expression expression;
 
 	private State next;
 
-	public List<Expression> getExpressions() {
-		return expressions;
+	public Expression getExpression() {
+		return expression;
 	}
 
-	public void setExpressions(List<Expression> expressions) {
-		this.expressions = expressions;
+	public void setExpression(Expression expression) {
+		this.expression = expression;
 	}
 
 	public State getNext() {

@@ -5,7 +5,7 @@ import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
 
-public class UnaryExpression extends Expression {
+public class UnaryExpression implements Expression {
 
     private SIGNAL value;
 
@@ -30,5 +30,15 @@ public class UnaryExpression extends Expression {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public Expression getExpression() {
+        return this;
+    }
+
+    @Override
+    public String getCondition() {
+        return "digitalRead(" + sensor.getPin() + ") == " + value;
     }
 }
