@@ -1,6 +1,5 @@
 import io.github.mosser.arduinoml.externals.antlr.ModelBuilder;
 import io.github.mosser.arduinoml.externals.antlr.StopErrorListener;
-import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 import io.github.mosser.arduinoml.externals.antlr.grammar.ArduinomlLexer;
 import io.github.mosser.arduinoml.externals.antlr.grammar.ArduinomlParser;
 import io.github.mosser.arduinoml.kernel.App;

@@ -11,9 +11,10 @@ T__9=10
 PORT_NUMBER=11
 IDENTIFIER=12
 SIGNAL=13
-NEWLINE=14
-WS=15
-COMMENT=16
+OPERATOR=14
+NEWLINE=15
+WS=16
+COMMENT=17
 'application'=1
 'sensor'=2
 'actuator'=3
@@ -21,6 +22,6 @@ COMMENT=16
 '{'=5
 '}'=6
 '<='=7
-'is'=8
-'=>'=9
-'->'=10
+'=>'=8
+'->'=9
+'is'=10

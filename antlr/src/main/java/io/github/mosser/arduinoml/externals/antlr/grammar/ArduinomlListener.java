@@ -117,4 +117,34 @@ public interface ArduinomlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInitial(ArduinomlParser.InitialContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArduinomlParser#abstractExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArduinomlParser#abstractExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArduinomlParser#unaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArduinomlParser#unaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArduinomlParser#binaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArduinomlParser#binaryExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx);
 }

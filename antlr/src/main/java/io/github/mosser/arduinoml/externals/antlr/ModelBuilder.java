@@ -4,14 +4,16 @@ import io.github.mosser.arduinoml.externals.antlr.grammar.*;
 
 
 import io.github.mosser.arduinoml.kernel.App;
-import io.github.mosser.arduinoml.kernel.behavioral.Action;
-import io.github.mosser.arduinoml.kernel.behavioral.State;
-import io.github.mosser.arduinoml.kernel.behavioral.Transition;
+import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.structural.Actuator;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
+import io.github.mosser.arduinoml.kernel.structural.OPERATOR;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModelBuilder extends ArduinomlBaseListener {
@@ -44,6 +46,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
 
     private State currentState = null;
+    private Expression currentExpression = null;
 
     /**************************
      ** Listening mechanisms **
@@ -57,13 +60,6 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override public void exitRoot(ArduinomlParser.RootContext ctx) {
         // Resolving states in transitions
-        bindings.forEach((key, binding) ->  {
-            Transition t = new Transition();
-            t.setSensor(binding.trigger);
-            t.setValue(binding.value);
-            t.setNext(states.get(binding.to));
-            states.get(key).setTransition(t);
-        });
         this.built = true;
     }
 
@@ -100,7 +96,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void exitState(ArduinomlParser.StateContext ctx) {
-        this.theApp.getStates().add(this.currentState);
+        //this.theApp.getStates().add(this.currentState);
         this.currentState = null;
     }
 
@@ -114,12 +110,40 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void enterTransition(ArduinomlParser.TransitionContext ctx) {
-        // Creating a placeholder as the next state might not have been compiled yet.
-        Binding toBeResolvedLater = new Binding();
-        toBeResolvedLater.to      = ctx.next.getText();
-        toBeResolvedLater.trigger = sensors.get(ctx.trigger.getText());
-        toBeResolvedLater.value   = SIGNAL.valueOf(ctx.value.getText());
-        bindings.put(currentState.getName(), toBeResolvedLater);
+        Transition transition = new Transition();
+        transition.setNext(states.get(ctx.next.getText()));
+        transition.setExpression(currentExpression);
+
+        currentState.getTransitions().add(transition);
+        this.theApp.getStates().add(this.currentState);
+    }
+
+    @Override
+    public void exitTransition(ArduinomlParser.TransitionContext ctx) {
+        //this.currentExpression = null;
+    }
+
+    @Override
+    public void enterUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) {
+        this.currentExpression = getUnaryExpression(ctx);
+    }
+
+    public UnaryExpression getUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) {
+        UnaryExpression unaryExpression = new UnaryExpression();
+        unaryExpression.setSensor(sensors.get(ctx.trigger.getText()));
+        unaryExpression.setValue(SIGNAL.valueOf(ctx.value.getText()));
+
+        return unaryExpression;
+    }
+
+    @Override
+    public void enterBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) {
+        BinaryExpression binaryExpression = new BinaryExpression();
+        binaryExpression.setOperator(OPERATOR.valueOf(ctx.operator.getText()));
+        binaryExpression.getExpressions().add(getUnaryExpression(ctx.left));
+        binaryExpression.getExpressions().add(getUnaryExpression(ctx.right));
+
+        this.currentExpression = binaryExpression;
     }
 
     @Override

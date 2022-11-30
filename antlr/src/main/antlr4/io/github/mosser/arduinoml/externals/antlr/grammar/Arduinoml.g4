@@ -15,10 +15,14 @@ bricks          :   (sensor|actuator)+;
     location    :   id=IDENTIFIER ':' port=PORT_NUMBER;
 
 states          :   state+;
-    state       :   initial? name=IDENTIFIER '{'  action+ transition '}';
+    state       :   initial? name=IDENTIFIER '{'  action+ (transition+)? '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
-    transition  :   trigger=IDENTIFIER 'is' value=SIGNAL '=>' next=IDENTIFIER ;
+    transition  :   expression=abstractExpression '=>' next=IDENTIFIER ;
     initial     :   '->';
+
+abstractExpression  :  unaryExpression | binaryExpression;
+unaryExpression   :   trigger=IDENTIFIER 'is' value=SIGNAL;
+binaryExpression  :   left=unaryExpression operator=OPERATOR right=unaryExpression;
 
 /*****************
  ** Lexer rules **
@@ -27,6 +31,8 @@ states          :   state+;
 PORT_NUMBER     :   [1-9] | '11' | '12';
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
 SIGNAL          :   'HIGH' | 'LOW';
+OPERATOR         :   'AND' | 'OR';
+
 
 /*************
  ** Helpers **
