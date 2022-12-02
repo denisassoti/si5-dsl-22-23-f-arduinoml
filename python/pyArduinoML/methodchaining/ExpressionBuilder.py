@@ -30,17 +30,29 @@ class ExpressionBuilder:
         """
         if sensor is None:
             if self.expression is None:
+                print("here")
                 self.expression = BinaryExpression(None, None, 0)
                 return
             else:
                 if self.expression.left is None:
+                    print("left none")
                     self.expression.left = BinaryExpression(None, None, 0)
-                if self.expression.left is not None and type(self.expression.left) is BinaryExpression:
+                elif self.expression.left is not None and type(self.expression.left) is BinaryExpression:
+                    print("left binary", self.expression.left)
                     self.both(self.expression.left)
-                elif self.expression.right is None and type(self.expression.right) is  BinaryExpression:
+                elif self.expression.right is not None and type(self.expression.right) is BinaryExpression:
+                    print("right binary", self.expression.right)
                     self.both(self.expression.right)
-                elif self.expression.right is not None:
+                else:
+                    print("right none")
                     self.expression.right = BinaryExpression(None, None, 0)
+                
+                # if self.expression.left is not None and type(self.expression.left) is BinaryExpression:
+                #     self.both(self.expression.left)
+                # elif self.expression.right is None and type(self.expression.right) is  BinaryExpression:
+                #     self.both(self.expression.right)
+                # elif self.expression.right is not None:
+                #     self.expression.right = BinaryExpression(None, None, 0)
                 
                 
 
@@ -69,5 +81,5 @@ eb.expression.left = BinaryExpression(None, None, 0)
 print(eb.expression)
 
 print("after both")
-eb.both()
-print(eb.expression)
+eb.both(eb.expression.left)
+print(eb.expression.left.left)
