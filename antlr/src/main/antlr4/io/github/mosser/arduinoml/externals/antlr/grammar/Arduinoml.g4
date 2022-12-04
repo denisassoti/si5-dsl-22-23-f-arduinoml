@@ -20,16 +20,18 @@ states          :   state+;
     transition  :   expression=abstractExpression '=>' next=IDENTIFIER ;
     initial     :   '->';
 
-abstractExpression  :  unaryExpression | binaryExpression;
+abstractExpression  :  unaryExpression | binaryExpression | temporalExpression;
 unaryExpression   :   trigger=IDENTIFIER 'is' value=SIGNAL;
 binaryExpression  :   left=unaryExpression operator=OPERATOR right=unaryExpression;
+temporalExpression :   'after' duration=INTEGER 'ms';
 
 /*****************
  ** Lexer rules **
  *****************/
 
-PORT_NUMBER     :   [1-9] | '11' | '12';
-IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE)+;
+PORT_NUMBER     :   [1-9] | '10' | '11' | '12';
+INTEGER         :   [0-9]+;
+IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE|DIGITS)+;
 SIGNAL          :   'HIGH' | 'LOW';
 OPERATOR         :   'AND' | 'OR';
 
@@ -40,6 +42,7 @@ OPERATOR         :   'AND' | 'OR';
 
 fragment LOWERCASE  : [a-z];                                 // abstract rule, does not really exists
 fragment UPPERCASE  : [A-Z];
+fragment DIGITS: [0-9];
 NEWLINE             : ('\r'? '\n' | '\r')+      -> skip;
 WS                  : ((' ' | '\t')+)           -> skip;     // who cares about whitespaces?
 COMMENT             : '#' ~( '\r' | '\n' )*     -> skip;     // Single line comments, starting with a #

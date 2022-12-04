@@ -94,4 +94,10 @@ public interface ArduinomlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ArduinomlParser#temporalExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx);
 }
