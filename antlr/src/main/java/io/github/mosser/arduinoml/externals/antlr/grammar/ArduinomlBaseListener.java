@@ -149,13 +149,13 @@ public class ArduinomlBaseListener implements ArduinomlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx) { }
+	@Override public void enterExpression(ArduinomlParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx) { }
+	@Override public void exitExpression(ArduinomlParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -168,18 +168,6 @@ public class ArduinomlBaseListener implements ArduinomlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
