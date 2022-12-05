@@ -5,7 +5,7 @@ class Transition :
     A transition between two states.
     """
 
-    def __init__(self, sensor, value, nextstate):
+    def __init__(self, sensor, value, nextstate, expression):
         """
         Constructor.
 
@@ -17,3 +17,4 @@ class Transition :
         self.sensor = sensor
         self.value = value
         self.nextstate = nextstate
+        self.expression = expression

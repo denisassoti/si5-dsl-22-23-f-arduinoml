@@ -41,11 +41,12 @@ class State(NamedElement):
         # generate code for state actions
         for action in self.actions:
             rtr += "\tdigitalWrite(%s, %s);\n" % (action.brick.name, SIGNAL.value(action.value))
-            rtr += "\tboolean guard =  millis() - time > debounce;\n"
+        rtr += "\tboolean guard =  millis() - time > debounce;\n"
         # generate code for the transition
         transition = self.transition
-        rtr += "\tif (digitalRead(%s) == %s && guard) {\n\t\ttime = millis(); state_%s();\n\t} else {\n\t\tstate_%s();\n\t}" \
-               % (transition.sensor.name, SIGNAL.value(transition.value), transition.nextstate.name, self.name)
+        expression = str(transition.expression)
+        rtr += "\tif (%s && guard) {\n\t\ttime = millis(); state_%s();\n\t} else {\n\t\tstate_%s();\n\t}" \
+               % (str(transition.expression), transition.nextstate.name, self.name)
         # end of state
         rtr += "\n}\n"
         return rtr
