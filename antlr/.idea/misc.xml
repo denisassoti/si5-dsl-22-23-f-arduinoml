@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ANTLRGenerationPreferences">
+    <option name="perGrammarGenerationSettings">
+      <list>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/src/main/antlr4/io/github/mosser/arduinoml/externals/antlr/grammar/Arduinoml.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="H:\5A_AL\2022-2023\S9\dsl\si5-dsl-22-23-f-arduinoml\antlr\src\main\java" />
+          <option name="libDir" value="H:\5A_AL\2022-2023\S9\dsl\si5-dsl-22-23-f-arduinoml\antlr\src\main\antlr4\io\github\mosser\arduinoml\externals\antlr\grammar" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="io.github.mosser.arduinoml.externals.antlr.grammar" />
+          <option name="language" value="" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+      </list>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="18" project-jdk-type="JavaSDK" />
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
+  </component>
+</project>

@@ -23,6 +23,7 @@ public abstract class Visitor<T> {
 
 	public abstract void visit(BinaryExpression expression);
 	public abstract void visit(UnaryExpression expression);
+	public abstract void visit(TemporalExpression expression);
 
 
 	/***********************

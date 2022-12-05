@@ -43,6 +43,14 @@ public class ToWiring extends Visitor<StringBuffer> {
 			brick.accept(this);
 		}
 
+		app.getStates().forEach(s -> {
+			s.getTransitions().forEach(t -> {
+				if (t.getExpression() instanceof TemporalExpression) {
+					t.getExpression().accept(this);
+				}
+			});
+		});
+
 		//second pass, setup and loop
 		context.put("pass",PASS.TWO);
 		w("\nvoid setup(){\n");
@@ -91,18 +99,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 			return;
 		}
 		if(context.get("pass") == PASS.TWO) {
-			w("(");
-			expression.getExpressions().get(0).accept(this);
-			w(" ");
-			if (expression.getOperator() == OPERATOR.AND) {
-				w("&&");
-			}
-			if (expression.getOperator() == OPERATOR.OR) {
-				w("||");
-			}
-			w(" ");
-			expression.getExpressions().get(1).accept(this);
-			w(")");
+			w(expression.getCondition());
 			return;
 		}
 
@@ -114,8 +111,21 @@ public class ToWiring extends Visitor<StringBuffer> {
 			return;
 		}
 		if(context.get("pass") == PASS.TWO) {
-			String sensorName = expression.getSensor().getName();
-			w(String.format("digitalRead(%d) == %s", expression.getSensor().getPin(), expression.getValue()));
+			w(expression.getCondition());
+			return;
+		}
+	}
+
+	@Override
+	public void visit(TemporalExpression expression) {
+		if(context.get("pass") == PASS.ONE) {
+			w(String.format("long temporal_transition_%d = 0;\n", expression.getValue()));
+			return;
+		}
+		if(context.get("pass") == PASS.TWO) {
+			w(String.format("\t\t\tif(temporal_transition_%d = 0) \n\t\t\t\t temporal_transition_%d = millis();\n", expression.getValue(), expression.getValue()));
+			w(String.format("\t\t\telse if((millis() - temporal_transition_%d) >= %d) {\n", expression.getValue(), expression.getValue()));
+			w(String.format("\t\t\t\ttemporal_transition_%d = 0;\n", expression.getValue()));
 			return;
 		}
 	}
@@ -140,32 +150,50 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	}
 
+	UnaryExpression getBinaryDeepestUnaryExpression(BinaryExpression expression){
+		Expression ex = expression.getExpressions().get(0);
+		if(ex instanceof UnaryExpression){
+			return (UnaryExpression) ex;
+		}
+		return getBinaryDeepestUnaryExpression((BinaryExpression) ex);
+	}
+
 	@Override
 	public void visit(Transition transition) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
 		}
 		if(context.get("pass") == PASS.TWO) {
-			Expression firstExpression = transition.getExpressions().get(0);
 			//get the first sensor name for the debounce guard
 			String firstSensorName = "";
-			if (firstExpression instanceof UnaryExpression) {
-				firstSensorName = ((UnaryExpression) firstExpression).getSensor().getName();
-			}
-			if (firstExpression instanceof BinaryExpression) {
-				firstSensorName = ((BinaryExpression) firstExpression).getExpressions().get(0).getSensor().getName();
-			}
 
-			w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
-					firstSensorName, firstSensorName));
-			w(String.format("\t\t\tif (%sBounceGuard && (", firstSensorName));
-			for (int i = 0; i < transition.getExpressions().size(); i++) {
-				transition.getExpressions().get(i).accept(this);
+			if(transition.getExpression()!=null){
+
+				if(transition.getExpression() instanceof TemporalExpression){
+					transition.getExpression().accept(this);
+					w(String.format("\t\t\t\tcurrentState = %s;\n", transition.getNext().getName()));
+					w("\t\t\t}\n");
+				}else {
+					if (transition.getExpression() instanceof UnaryExpression) {
+						firstSensorName = ((UnaryExpression) transition.getExpression()).getSensor().getName();
+					}
+					if (transition.getExpression() instanceof BinaryExpression) {
+						firstSensorName = getBinaryDeepestUnaryExpression((BinaryExpression) transition.getExpression()).getSensor().getName();
+					}
+
+
+					w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
+							firstSensorName, firstSensorName));
+
+					w(String.format("\t\t\tif (%sBounceGuard && ", firstSensorName));
+					transition.getExpression().accept(this);
+					w(String.format(") {\n" +
+							"\t\t\t\t%sLastDebounceTime = millis();\n" +
+							"\t\t\t\tcurrentState = %s;\n" +
+							"\t\t\t}\n", firstSensorName, transition.getNext().getName()));
+				}
+
 			}
-			w(String.format(")) {\n" +
-					"\t\t\t\t%sLastDebounceTime = millis();\n" +
-					"\t\t\t\tcurrentState = %s;\n" +
-					"\t\t\t}\n", firstSensorName, transition.getNext().getName()));
 			return;
 		}
 	}

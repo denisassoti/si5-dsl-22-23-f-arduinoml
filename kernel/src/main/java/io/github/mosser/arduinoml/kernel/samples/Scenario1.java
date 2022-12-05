@@ -65,14 +65,14 @@ public class Scenario1 {
 			UnaryExpression exp1 = new UnaryExpression();
 			exp1.setSensor(button);
 			exp1.setValue(SIGNAL.HIGH);
-		t1.setExpressions(Arrays.asList(exp1));
+		t1.setExpression(exp1);
 
 		Transition  t2 = new Transition();
 		t2.setNext(off);
 			UnaryExpression exp2 = new UnaryExpression();
 			exp2.setSensor(button);
 			exp2.setValue(SIGNAL.LOW);
-		t2.setExpressions(Arrays.asList(exp2));
+		t2.setExpression(exp2);
 
 		// Binding transitions to states
 		off.setTransitions(Arrays.asList(t1));

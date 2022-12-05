@@ -64,7 +64,7 @@ public class Scenario2 {
 			exp3.setExpressions(Arrays.asList(exp1, exp2));
 			exp3.setOperator(OPERATOR.AND);
 
-		off2On.setExpressions(Arrays.asList(exp3));
+		off2On.setExpression(exp3);
 
 		Transition on2Off = new Transition();
 		on2Off.setNext(off);
@@ -80,7 +80,7 @@ public class Scenario2 {
 			exp6.setExpressions(Arrays.asList(exp4, exp5));
 			exp6.setOperator(OPERATOR.OR);
 
-		on2Off.setExpressions(Arrays.asList(exp6));
+		on2Off.setExpression(exp6);
 
 		// Binding transitions to states
 		off.setTransitions(Arrays.asList(off2On));

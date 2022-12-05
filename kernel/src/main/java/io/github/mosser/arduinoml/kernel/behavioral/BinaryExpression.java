@@ -7,17 +7,17 @@ import io.github.mosser.arduinoml.kernel.structural.OPERATOR;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BinaryExpression extends Expression {
+public class BinaryExpression implements Expression {
 
-    private List<UnaryExpression> expressions = new ArrayList<>(); //array with 2 unary expressions
+    private List<Expression> expressions = new ArrayList<>(); //array with 2 unary expressions
 
     private OPERATOR operator;
 
-    public List<UnaryExpression> getExpressions() {
+    public List<Expression> getExpressions() {
         return expressions;
     }
 
-    public void setExpressions(List<UnaryExpression> expressions) {
+    public void setExpressions(List<Expression> expressions) {
         if (expressions.size() != 2) {
             throw new IllegalArgumentException("BinaryExpression must have 2 unary expressions");
         }
@@ -34,5 +34,22 @@ public class BinaryExpression extends Expression {
     @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public Expression getExpression() {
+        return this;
+    }
+
+    @Override
+    public String getCondition() {
+        switch (operator) {
+            case AND:
+                return String.format("(%s && %s)", expressions.get(0).getCondition(), expressions.get(1).getCondition());
+            case OR:
+                return String.format("(%s || %s)", expressions.get(0).getCondition(), expressions.get(1).getCondition());
+            default:
+                throw new IllegalArgumentException("Operator not supported");
+        }
     }
 }
