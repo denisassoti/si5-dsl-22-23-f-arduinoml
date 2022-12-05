@@ -4,6 +4,8 @@ import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.structural.*;
 
+import java.rmi.RemoteException;
+
 /**
  * Quick and dirty visitor to support the generation of Wiring code
  */
@@ -54,6 +56,15 @@ public class ToWiring extends Visitor<StringBuffer> {
 		//second pass, setup and loop
 		context.put("pass",PASS.TWO);
 		w("\nvoid setup(){\n");
+		for (State state: app.getStates()) {
+			//if we have at least one remote expression, we need to setup the remote
+			for (Transition transition: state.getTransitions()) {
+				if (transition.getExpression() instanceof RemoteExpression) {
+					w("\tSerial.begin(9600);" + "\n");
+					break;
+				}
+			}
+		}
 		for(Brick brick: app.getBricks()){
 			brick.accept(this);
 		}
@@ -159,6 +170,19 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
+	public void visit(RemoteExpression expression) {
+		if(context.get("pass") == PASS.ONE) {
+			return;
+		}
+		if(context.get("pass") == PASS.TWO) {
+			w(String.format("\t\t\tif(Serial.available() > 0){\n" +
+					"\t\t\t\tchar c = Serial.read();\n" +
+					"\t\t\t\tif(c == '%c')\n", expression.getValue()));
+			return;
+		}
+	}
+
+	@Override
 	public void visit(Transition transition) {
 		if(context.get("pass") == PASS.ONE) {
 			return;
@@ -173,7 +197,12 @@ public class ToWiring extends Visitor<StringBuffer> {
 					transition.getExpression().accept(this);
 					w(String.format("\t\t\t\tcurrentState = %s;\n", transition.getNext().getName()));
 					w("\t\t\t}\n");
-				}else {
+				}else if(transition.getExpression() instanceof RemoteExpression) {
+					transition.getExpression().accept(this);
+					w(String.format("\t\t\t\t\tcurrentState = %s;\n", transition.getNext().getName()));
+					w("\t\t\t}\n");
+				}
+				else {
 					if (transition.getExpression() instanceof UnaryExpression) {
 						firstSensorName = ((UnaryExpression) transition.getExpression()).getSensor().getName();
 					}
