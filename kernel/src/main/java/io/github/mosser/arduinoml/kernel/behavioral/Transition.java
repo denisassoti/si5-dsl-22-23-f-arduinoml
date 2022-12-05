@@ -29,6 +29,10 @@ public class Transition implements Visitable {
 		this.next = next;
 	}
 
+	public void addExpression(Expression expression){
+		this.expressions.add(expression);
+	}
+
 
 	@Override
 	public void accept(Visitor visitor) {

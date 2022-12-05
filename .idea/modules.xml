@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/java/dsl-java.iml" filepath="$PROJECT_DIR$/java/dsl-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kernel/kernel-jvm.iml" filepath="$PROJECT_DIR$/kernel/kernel-jvm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/si5-dsl-22-23-f-arduinoml.iml" filepath="$PROJECT_DIR$/.idea/si5-dsl-22-23-f-arduinoml.iml" />
+    </modules>
+  </component>
+</project>

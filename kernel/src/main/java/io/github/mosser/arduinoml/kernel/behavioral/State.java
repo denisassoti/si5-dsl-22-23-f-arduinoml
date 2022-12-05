@@ -38,7 +38,9 @@ public class State implements NamedElement, Visitable {
 	public void setTransitions(List<Transition> transitions) {
 		this.transitions = transitions;
 	}
-
+	public void addTransition(Transition transition) {
+		this.transitions.add(transition);
+	}
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
