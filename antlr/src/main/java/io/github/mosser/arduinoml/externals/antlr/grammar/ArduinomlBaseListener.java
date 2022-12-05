@@ -180,6 +180,18 @@ public class ArduinomlBaseListener implements ArduinomlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -23,8 +23,12 @@ We consider here that the current directory is the `antlr` directory.
   2. Then, compile the ANTLR code
     * `mvn clean package`
   3. Run the compiler using the `exec` plugin:
-    * `mvn exec:java -Dexec.args="src/main/resources/red_button.arduinoml"`
+    * `mvn exec:java -Dexec.args="src/main/resources/scenario1.arduinoml"`
     * `mvn exec:java -Dexec.args="src/main/resources/scenario2.arduinoml"`
+    * `mvn exec:java -Dexec.args="src/main/resources/scenario3.arduinoml"`
+    * `mvn exec:java -Dexec.args="src/main/resources/scenario4.arduinoml"`
+    * `mvn exec:java -Dexec.args="src/main/resources/scenario5_temporal.arduinoml"`
+
     
 ## Code Description
 

@@ -147,4 +147,14 @@ public interface ArduinomlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArduinomlParser#temporalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArduinomlParser#temporalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx);
 }

@@ -11,10 +11,7 @@ import io.github.mosser.arduinoml.kernel.structural.Sensor;
 import io.github.mosser.arduinoml.kernel.structural.OPERATOR;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ModelBuilder extends ArduinomlBaseListener {
 
@@ -37,16 +34,13 @@ public class ModelBuilder extends ArduinomlBaseListener {
     private Map<String, Sensor>   sensors   = new HashMap<>();
     private Map<String, Actuator> actuators = new HashMap<>();
     private Map<String, State>    states  = new HashMap<>();
-    private Map<String, Binding>  bindings  = new HashMap<>();
+    private Map<String, LinkedList<String>> StatesNextStates = new HashMap<>(); // state -> list of next states (names)
 
-    private class Binding { // used to support state resolution for transitions
-        String to; // name of the next state, as its instance might not have been compiled yet
-        Sensor trigger;
-        SIGNAL value;
-    }
 
     private State currentState = null;
-    private Expression currentExpression = null;
+
+    private Transition currentTransition = null;
+    private String nextStateName = null;
 
     /**************************
      ** Listening mechanisms **
@@ -59,8 +53,25 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
 
     @Override public void exitRoot(ArduinomlParser.RootContext ctx) {
-        // Resolving states in transitions
         this.built = true;
+
+        this.StatesNextStates.forEach((stateName, nextStates) -> {
+            //get the state in this.App.states with the name stateName and set its transitions next
+            for (State s : this.theApp.getStates()) {
+                if (s.getName().equals(stateName)) {
+                    //add to the first state transition the first next state and so on
+                    for (String nextStateName : nextStates) {
+                        for (Transition t : s.getTransitions()) {
+                            if (t.getNext() == null) {
+                                t.setNext(this.states.get(nextStateName));
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
@@ -96,7 +107,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
 
     @Override
     public void exitState(ArduinomlParser.StateContext ctx) {
-        //this.theApp.getStates().add(this.currentState);
+        this.theApp.getStates().add(this.currentState);
         this.currentState = null;
     }
 
@@ -105,27 +116,32 @@ public class ModelBuilder extends ArduinomlBaseListener {
         Action action = new Action();
         action.setActuator(actuators.get(ctx.receiver.getText()));
         action.setValue(SIGNAL.valueOf(ctx.value.getText()));
-        currentState.getActions().add(action);
+
+        this.currentState.getActions().add(action);
     }
 
     @Override
     public void enterTransition(ArduinomlParser.TransitionContext ctx) {
         Transition transition = new Transition();
-        transition.setNext(states.get(ctx.next.getText()));
-        transition.setExpression(currentExpression);
-
-        currentState.getTransitions().add(transition);
-        this.theApp.getStates().add(this.currentState);
+        this.currentTransition = transition;
+        this.nextStateName = ctx.next.getText();
     }
 
     @Override
     public void exitTransition(ArduinomlParser.TransitionContext ctx) {
-        //this.currentExpression = null;
+        this.currentState.getTransitions().add(this.currentTransition);
+        this.StatesNextStates.computeIfAbsent(this.currentState.getName(), k -> new LinkedList<>()).add(this.nextStateName);
+        this.currentTransition = null;
+        this.nextStateName = null;
     }
+
 
     @Override
     public void enterUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) {
-        this.currentExpression = getUnaryExpression(ctx);
+
+         if(ctx.getParent() instanceof ArduinomlParser.AbstractExpressionContext) {
+             this.currentTransition.setExpression(getUnaryExpression(ctx));
+         }
     }
 
     public UnaryExpression getUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) {
@@ -143,7 +159,16 @@ public class ModelBuilder extends ArduinomlBaseListener {
         binaryExpression.getExpressions().add(getUnaryExpression(ctx.left));
         binaryExpression.getExpressions().add(getUnaryExpression(ctx.right));
 
-        this.currentExpression = binaryExpression;
+        this.currentTransition.setExpression(binaryExpression);
+    }
+
+    @Override
+    public void enterTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) {
+        TemporalExpression temporalExpression = new TemporalExpression();
+        temporalExpression.setValue(Integer.parseInt(ctx.duration.getText()));
+
+        this.currentTransition.setExpression(temporalExpression);
+
     }
 
     @Override
