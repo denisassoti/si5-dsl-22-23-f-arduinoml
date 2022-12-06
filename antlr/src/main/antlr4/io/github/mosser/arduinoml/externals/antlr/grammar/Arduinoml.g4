@@ -17,12 +17,13 @@ bricks          :   (sensor|actuator)+;
 states          :   state+;
     state       :   initial? name=IDENTIFIER '{'  action+ (transition+)? '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
-    transition  :   expression=abstractExpression '=>' next=IDENTIFIER ;
+    transition  :   exp=expression '=>' next=IDENTIFIER ;
     initial     :   '->';
 
-abstractExpression  :  unaryExpression | binaryExpression | temporalExpression;
+expression  :  unaryExpression | '('left=expression operator=OPERATOR right=expression')' |temporalExpression;
 unaryExpression   :   trigger=IDENTIFIER 'is' value=SIGNAL;
-binaryExpression  :   left=unaryExpression operator=OPERATOR right=unaryExpression;
+//binaryExpression  :   left=abstractExpression operator=OPERATOR right=unaryExpression;
+//binaryExpression  :   operator=OPERATOR (left=abstractExpression ',' right=unaryExpression;
 temporalExpression :   'after' duration=INTEGER 'ms';
 
 /*****************
@@ -33,7 +34,7 @@ PORT_NUMBER     :   [1-9] | '10' | '11' | '12';
 INTEGER         :   [0-9]+;
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE|DIGITS)+;
 SIGNAL          :   'HIGH' | 'LOW';
-OPERATOR         :   'AND' | 'OR';
+OPERATOR        :   'AND' | 'OR';
 
 
 /*************
