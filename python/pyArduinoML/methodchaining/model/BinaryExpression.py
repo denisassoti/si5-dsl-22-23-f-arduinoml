@@ -1,8 +1,11 @@
 import sys
+
 sys.path.append('..')
 from model.Expression import Expression
 from model.UnaryExpression import UnaryExpression
 from model.OPERATOR import value
+from model.KeyExpression import KeyExpression
+
 import copy
 
 class BinaryExpression(Expression):
@@ -21,31 +24,37 @@ class BinaryExpression(Expression):
         initial = copy.deepcopy(self)
         if self.left is None and self == initial:
             self.operator = 0
-            self.left = BinaryExpression(None, None, None) if not sensor else UnaryExpression(sensor, None)
+            self.left = BinaryExpression(UnaryExpression(sensor, None), None, 0) if sensor else BinaryExpression(None, None, 0)
+            return
         if self.left is not None and type(self.left) is BinaryExpression:
             self.left.both(sensor)
         if self.right is not None and type(self.right) is BinaryExpression:
             self.right.both(sensor)
         if self.right is None and self == initial:
             self.operator = 0
-            self.right = BinaryExpression(None, None, None) if not sensor else UnaryExpression(sensor, None)
+            self.right = BinaryExpression(UnaryExpression(sensor, None), None, 0) if sensor else BinaryExpression(None, None, 0)
+            return
 
     
     def either(self, sensor=None):
         initial = copy.deepcopy(self)
         if self.left is None and self == initial:
             self.operator = 1
-            self.left = UnaryExpression(sensor, None) if sensor else BinaryExpression(None, None, None)
+            self.left = BinaryExpression(UnaryExpression(sensor, None), None, 1) if sensor else BinaryExpression(None, None, 1)
+            return
         if self.left is not None and type(self.left) is BinaryExpression:
             self.left.either(sensor)
         if self.right is not None and type(self.right) is BinaryExpression:
             self.right.either(sensor)         
         if self.right is None and self == initial:
             self.operator = 1
-            self.right = UnaryExpression(sensor, None) if sensor else BinaryExpression(None, None, None)
+            self.right = BinaryExpression(UnaryExpression(sensor, None), None, 1) if sensor else BinaryExpression(None, None, 1)
+            return
     
     def or_(self, sensor=None):
         initial = copy.deepcopy(self)
+        if sensor is None:
+            return self
         if self.left is None and self == initial:
             self.left = BinaryExpression(None, None, None) if not sensor else UnaryExpression(sensor, None)
         if self.left is not None and type(self.left) is BinaryExpression:
@@ -73,6 +82,8 @@ class BinaryExpression(Expression):
         
     def and_(self, sensor=None):
         initial = copy.deepcopy(self)
+        if sensor is None:
+            return self
         if self.left is None and self == initial:
             self.left = UnaryExpression(sensor, None) if sensor else BinaryExpression(None, None, None)
         if self.left is not None and type(self.left) is BinaryExpression:
@@ -82,3 +93,13 @@ class BinaryExpression(Expression):
         if self.right is None and self == initial:
             self.right = UnaryExpression(sensor, None) if sensor else BinaryExpression(None, None, None)
 
+    def key(self, key):
+        initial = copy.deepcopy(self)
+        if self.left is None and self == initial:
+            self.left = KeyExpression(key)
+        if self.left is not None and type(self.left) is BinaryExpression:
+            self.left.key(key)
+        if self.right is not None and type(self.right) is BinaryExpression:
+            self.right.key(key)
+        if self.right is None and self == initial:
+            self.right = KeyExpression(key)

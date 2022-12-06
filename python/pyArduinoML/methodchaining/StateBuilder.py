@@ -80,9 +80,7 @@ class StateBuilder:
         #     raise UndefinedState()
         # if self.transition.next_state not in states.keys():
         #     raise UndefinedState()
-        transition = Transition(None,
-                                self.transition.value,
-                                states[self.transition.next_state],
+        transition = Transition(states[self.transition.next_state],
                                 self.transition.expression)
         states[self.state].transition = transition
 

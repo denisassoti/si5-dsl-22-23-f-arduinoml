@@ -51,6 +51,9 @@ class TransitionBuilder:
     def or_(self):
         return self.expression.or_()
 
+    def key(self, key):
+        return self.expression.key(key)
+
     def go_to_state(self, next_state):
         """
         Sets the target state.
