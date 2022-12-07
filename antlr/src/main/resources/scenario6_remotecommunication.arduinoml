@@ -1,4 +1,4 @@
-application test
+application temporalTransition
 
 # Declaring bricks
 sensor button: 9
@@ -7,11 +7,10 @@ actuator led: 12
 # Declaring states
 on {
     led <= HIGH
-    (button is HIGH AND after 100 ms) => off
+    key 'e'  => off
 }
 
 -> off {
     led <= LOW
-    button is HIGH => on
-    after 400 ms =>on
+    (button is HIGH AND key 'a')=> on
 }
