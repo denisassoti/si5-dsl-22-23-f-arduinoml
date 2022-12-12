@@ -5,6 +5,7 @@ from model.Expression import Expression
 from model.UnaryExpression import UnaryExpression
 from model.OPERATOR import value
 from model.KeyExpression import KeyExpression
+from model.TemporalExpression import TemporalExpression
 
 import copy
 
@@ -23,7 +24,6 @@ class BinaryExpression(Expression):
     def both(self, sensor=None):
         initial = copy.deepcopy(self)
         if self.left is None and self == initial:
-            self.operator = 0
             self.left = BinaryExpression(UnaryExpression(sensor, None), None, 0) if sensor else BinaryExpression(None, None, 0)
             return
         if self.left is not None and type(self.left) is BinaryExpression:
@@ -31,7 +31,6 @@ class BinaryExpression(Expression):
         if self.right is not None and type(self.right) is BinaryExpression:
             self.right.both(sensor)
         if self.right is None and self == initial:
-            self.operator = 0
             self.right = BinaryExpression(UnaryExpression(sensor, None), None, 0) if sensor else BinaryExpression(None, None, 0)
             return
 
@@ -39,7 +38,6 @@ class BinaryExpression(Expression):
     def either(self, sensor=None):
         initial = copy.deepcopy(self)
         if self.left is None and self == initial:
-            self.operator = 1
             self.left = BinaryExpression(UnaryExpression(sensor, None), None, 1) if sensor else BinaryExpression(None, None, 1)
             return
         if self.left is not None and type(self.left) is BinaryExpression:
@@ -47,7 +45,6 @@ class BinaryExpression(Expression):
         if self.right is not None and type(self.right) is BinaryExpression:
             self.right.either(sensor)         
         if self.right is None and self == initial:
-            self.operator = 1
             self.right = BinaryExpression(UnaryExpression(sensor, None), None, 1) if sensor else BinaryExpression(None, None, 1)
             return
     
@@ -103,3 +100,14 @@ class BinaryExpression(Expression):
             self.right.key(key)
         if self.right is None and self == initial:
             self.right = KeyExpression(key)
+
+    def after(self, time):
+        initial = copy.deepcopy(self)
+        if self.left is None and self == initial:
+            self.left = TemporalExpression(time)
+        if self.left is not None and type(self.left) is BinaryExpression:
+            self.left.after(time)
+        if self.right is not None and type(self.right) is BinaryExpression:
+            self.right.after(time)
+        if self.right is None and self == initial:
+            self.right = TemporalExpression(time)

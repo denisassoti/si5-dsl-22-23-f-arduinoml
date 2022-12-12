@@ -2,6 +2,7 @@ from model.Expression import Expression
 from model.BinaryExpression import BinaryExpression
 from model.UnaryExpression import UnaryExpression
 from model.KeyExpression import KeyExpression
+from model.TemporalExpression import TemporalExpression
 
 class ExpressionBuilder:
     """
@@ -15,11 +16,11 @@ class ExpressionBuilder:
         :return:
         """
         self.root = root
-        self.both_validator = 0
-        self.either_validator = 0
-        self.expression = UnaryExpression(sensor, None) if sensor else None 
+        self.expression = UnaryExpression(sensor, None) if sensor else None
+        self.parenthesis = "" 
 
     def both(self, sensor=None):
+        self.parenthesis += "("
         if self.expression is None:
             if sensor is None:
                 self.expression = BinaryExpression(None, None, 0)
@@ -30,6 +31,7 @@ class ExpressionBuilder:
         return self
 
     def either(self, sensor=None):
+        self.parenthesis += "["
         if self.expression is None:
             if sensor is None:
                 self.expression = BinaryExpression(None, None, 1)
@@ -47,18 +49,34 @@ class ExpressionBuilder:
         return self
     
     def and_(self, sensor=None):
+        if self.parenthesis[-1] != "(":
+            raise Exception("Expecting or_ rather than and_")
+        else : 
+            self.parenthesis = self.parenthesis[:-1]
         self.expression.and_(sensor)
         return self
     
     def or_(self, sensor=None):
+        if self.parenthesis[-1] != "[":
+            raise Exception("Expecting and_ rather than or_")
+        else :
+            self.parenthesis = self.parenthesis[:-1]
         self.expression.or_(sensor)
         return self
     
     def key(self, key):
+        self.root.used_remote()
         if self.expression is None:
             self.expression = KeyExpression(key)
         else:
             self.expression.key(key)
+        return self
+    
+    def after(self, time):
+        if self.expression is None:
+            self.expression = TemporalExpression(time)
+        else:
+            self.expression.after(time)
         return self
                 
     def __str__(self) -> str:
@@ -75,10 +93,5 @@ class ExpressionBuilder:
         :return: StateBuilder, the builder root
         """
         return self.root.go_to_state(next_state)
-            
+        
 
-exp_builder = ExpressionBuilder(None)
-
-
-exp_builder.both().key("a").and_().both().key("b").and_().key("c")
-print(exp_builder)

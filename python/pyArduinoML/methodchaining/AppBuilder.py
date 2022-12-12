@@ -21,6 +21,8 @@ class AppBuilder:
         self.name = name
         self.bricks = []  # List[BrickBuider], builders for the bricks
         self.states = []  # List[StateBuilder], builders for the states
+        self.used_remote = False
+        self.used_beep = False
 
     def actuator(self, actuator):
         """
@@ -43,7 +45,7 @@ class AppBuilder:
         builder = BrickBuilder(self, sensor, SENSOR)
         self.bricks.append(builder)
         return builder
-
+        
     def state(self, state):
         """
         Adds a state.
@@ -54,6 +56,14 @@ class AppBuilder:
         builder = StateBuilder(self, state)
         self.states.append(builder)
         return builder
+
+    def remote_used(self):
+        self.used_remote = True
+        return self
+    
+    def beep_used(self):
+        self.used_beep = True
+        return self
 
     def get_contents(self):
         """
@@ -76,8 +86,8 @@ class AppBuilder:
             states[state.name] = state
             state_names += [state.name]
             state_values += [state]
-        # build the transitioéns (2-step pass due to the meta-model)
+        # build the transitions (2-step pass due to the meta-model)
         for builder in self.states:
             builder.get_contents2(bricks, states)
         # build the app
-        return App(self.name, bricks.values(), state_values)
+        return App(self.name, bricks.values(), state_values, used_remote=self.used_remote, used_beep=self.used_beep)

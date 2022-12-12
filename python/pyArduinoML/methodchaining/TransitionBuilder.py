@@ -54,6 +54,12 @@ class TransitionBuilder:
     def key(self, key):
         return self.expression.key(key)
 
+    def used_remote(self):
+        self.root.used_remote()
+        
+    def after(self, time):
+        return self.expression.after(time)
+
     def go_to_state(self, next_state):
         """
         Sets the target state.
