@@ -7,6 +7,7 @@ import io.github.mosser.arduinoml.kernel.App;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public abstract class Visitor<T> {
 	public abstract void visit(BinaryExpression expression);
 	public abstract void visit(UnaryExpression expression);
 	public abstract void visit(TemporalExpression expression);
+	public abstract void visit(RemoteExpression	 expression);
 
 
 	/***********************

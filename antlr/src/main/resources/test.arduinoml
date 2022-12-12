@@ -1,0 +1,17 @@
+application test
+
+# Declaring bricks
+sensor button: 9
+actuator led: 12
+
+# Declaring states
+on {
+    led <= HIGH
+    (button is HIGH AND after 100 ms) => off
+}
+
+-> off {
+    led <= LOW
+    button is HIGH => on
+    after 400 ms =>on
+}

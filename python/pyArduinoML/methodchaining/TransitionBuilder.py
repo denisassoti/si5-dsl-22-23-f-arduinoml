@@ -7,6 +7,7 @@ from UndefinedState import UndefinedState
 from model.OPERATOR import OR, AND
 from model.BinaryExpression import BinaryExpression
 from model.UnaryExpression import UnaryExpression
+from ExpressionBuilder import ExpressionBuilder
 
 class TransitionBuilder:
     """
@@ -25,8 +26,7 @@ class TransitionBuilder:
         self.sensor = sensor
         self.value = None  # SIGNAL, state of the brick to trigger the transition
         self.next_state = None  # String, name of the target state
-        self.binary_expression : BinaryExpression = BinaryExpression(None, None, None)  # Expression, expression to trigger the transition
-        self.unary_expression : UnaryExpression = UnaryExpression(None, None)  # Expression, expression to trigger the transition
+        self.expression = ExpressionBuilder(self, sensor)
 
     def has_value(self, value):
         """
@@ -36,10 +36,29 @@ class TransitionBuilder:
         :return: TransitionBuilder, the builder
         """
         self.value = value
+        self.expression.has_value(value)
         return self
     
-    # def has_value_(self, value):
+    def both(self, sensor):
+        return self.expression.both(sensor)
 
+    def either(self, sensor):
+        return self.expression.either(sensor)
+    
+    def and_(self):
+        return self.expression.and_()
+    
+    def or_(self):
+        return self.expression.or_()
+
+    def key(self, key):
+        return self.expression.key(key)
+
+    def used_remote(self):
+        self.root.used_remote()
+        
+    def after(self, time):
+        return self.expression.after(time)
 
     def go_to_state(self, next_state):
         """
@@ -65,55 +84,4 @@ class TransitionBuilder:
             raise UndefinedBrick()
         if self.next_state not in states.keys():
             raise UndefinedState()
-        return Transition(bricks[self.sensor], self.value, states[self.next_state])
-
-    def both(self, expression):
-        """
-        Sets the expression.
-
-        :param expression: Expression, expression to trigger the transition
-        :return: TransitionBuilder, the builder
-        """
-        print("type of both ",type(expression))
-        self.binary_expression.left = expression
-        return self
-    
-    def and_(self, expression):
-        """
-        Sets the expression.
-
-        :param expression: Expression, expression to trigger the transition
-        :return: TransitionBuilder, the builder
-        """
-        self.binary_expression.right = expression
-        self.binary_expression.operator = AND
-        return self
-
-    def either(self, expression):
-        """
-        Sets the expression.
-
-        :param expression: Expression, expression to trigger the transition
-        :return: TransitionBuilder, the builder
-        """
-        self.binary_expression.left = expression
-        return self
-    
-    def or_(self, expression):
-        """
-        Sets the expression.
-
-        :param expression: Expression, expression to trigger the transition
-        :return: TransitionBuilder, the builder
-        """
-        self.binary_expression.right = expression
-        self.binary_expression.operator = OR
-        return self
-
-    def __str__(self) -> str:
-        return self.binary_expression.__str__()
-    
-    def __repr__(self) -> str:
-        return self.binary_expression.__repr__()
-
-    
+        return Transition(bricks[self.sensor], self.value, states[self.next_state], self.expression)

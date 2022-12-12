@@ -149,13 +149,13 @@ public class ArduinomlBaseListener implements ArduinomlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx) { }
+	@Override public void enterExpression(ArduinomlParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx) { }
+	@Override public void exitExpression(ArduinomlParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -173,18 +173,6 @@ public class ArduinomlBaseListener implements ArduinomlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -192,6 +180,18 @@ public class ArduinomlBaseListener implements ArduinomlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRemoteExpression(ArduinomlParser.RemoteExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRemoteExpression(ArduinomlParser.RemoteExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -36,15 +36,21 @@ public class ModelBuilder extends ArduinomlBaseListener {
     private Map<String, State>    states  = new HashMap<>();
     private Map<String, LinkedList<String>> StatesNextStates = new HashMap<>(); // state -> list of next states (names)
 
+    private Expression[] currentExpressions = new Expression[2];
+
 
     private State currentState = null;
 
     private Transition currentTransition = null;
     private String nextStateName = null;
 
+    // private List<Expression> currentExpression = new ArrayList<>();
+
     /**************************
      ** Listening mechanisms **
      **************************/
+
+    static int i = 0; // for debugging
 
     @Override
     public void enterRoot(ArduinomlParser.RootContext ctx) {
@@ -139,9 +145,54 @@ public class ModelBuilder extends ArduinomlBaseListener {
     @Override
     public void enterUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) {
 
-         if(ctx.getParent() instanceof ArduinomlParser.AbstractExpressionContext) {
-             this.currentTransition.setExpression(getUnaryExpression(ctx));
-         }
+        UnaryExpression expression = getUnaryExpression(ctx);
+        if (currentExpressions[0] == null) {
+            currentExpressions[0] = expression;
+        } else {
+            currentExpressions[1] = expression;
+        }
+    }
+
+    public Expression getExpression(ArduinomlParser.ExpressionContext ctx){
+        if(ctx.operator != null){
+            BinaryExpression binaryExpression = new BinaryExpression();
+            binaryExpression.setExpressions(Arrays.asList(getExpression(ctx.left), getExpression(ctx.right)));
+            binaryExpression.setOperator(OPERATOR.valueOf(ctx.operator.getText()));
+            return binaryExpression;
+        }else {
+            //this is a unary expression or temporal expression
+            if(ctx.temporalExpression()!= null){
+                return getTemporalExpression(ctx.temporalExpression());
+            }
+            if (ctx.unaryExpression() != null) {
+                return getUnaryExpression(ctx.unaryExpression());
+            }
+        }
+        return null;
+    }
+    @Override
+    public void enterExpression(ArduinomlParser.ExpressionContext ctx) {
+
+    }
+
+    @Override
+    public void exitExpression(ArduinomlParser.ExpressionContext ctx) {
+
+        if (ctx.getParent() instanceof ArduinomlParser.TransitionContext) {
+            if (ctx.operator == null) {
+                this.currentTransition.setExpression(this.currentExpressions[0]);
+            } else {
+                BinaryExpression binaryExpression = new BinaryExpression();
+                binaryExpression.setOperator(OPERATOR.valueOf(ctx.operator.getText()));
+                binaryExpression.setExpressions(Arrays.asList(this.currentExpressions[0], this.currentExpressions[1]));
+                this.currentTransition.setExpression(binaryExpression);
+            }
+
+            this.currentExpressions[0] = null;
+            this.currentExpressions[1] = null;
+        }
+
+
     }
 
     public UnaryExpression getUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx) {
@@ -152,14 +203,23 @@ public class ModelBuilder extends ArduinomlBaseListener {
         return unaryExpression;
     }
 
-    @Override
-    public void enterBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx) {
-        BinaryExpression binaryExpression = new BinaryExpression();
-        binaryExpression.setOperator(OPERATOR.valueOf(ctx.operator.getText()));
-        binaryExpression.getExpressions().add(getUnaryExpression(ctx.left));
-        binaryExpression.getExpressions().add(getUnaryExpression(ctx.right));
+    public TemporalExpression getTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) {
+        TemporalExpression temporalExpression = new TemporalExpression();
+        temporalExpression.setValue(Integer.parseInt(ctx.duration.getText()));
 
-        this.currentTransition.setExpression(binaryExpression);
+        return temporalExpression;
+    }
+
+    @Override
+    public void enterRemoteExpression(ArduinomlParser.RemoteExpressionContext ctx) {
+        RemoteExpression remoteExpression = new RemoteExpression();
+        remoteExpression.setValue(ctx.key.getText().charAt(1));
+
+        if (currentExpressions[0] == null) {
+            currentExpressions[0] = remoteExpression;
+        } else {
+            currentExpressions[1] = remoteExpression;
+        }
     }
 
     @Override
@@ -167,8 +227,11 @@ public class ModelBuilder extends ArduinomlBaseListener {
         TemporalExpression temporalExpression = new TemporalExpression();
         temporalExpression.setValue(Integer.parseInt(ctx.duration.getText()));
 
-        this.currentTransition.setExpression(temporalExpression);
-
+        if (currentExpressions[0] == null) {
+            currentExpressions[0] = temporalExpression;
+        } else {
+            currentExpressions[1] = temporalExpression;
+        }
     }
 
     @Override
@@ -177,4 +240,3 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
 
 }
-

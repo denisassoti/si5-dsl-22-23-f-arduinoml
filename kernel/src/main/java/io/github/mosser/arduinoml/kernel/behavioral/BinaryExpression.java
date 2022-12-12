@@ -19,6 +19,7 @@ public class BinaryExpression implements Expression {
 
     public void setExpressions(List<Expression> expressions) {
         if (expressions.size() != 2) {
+            System.out.println("length = " + expressions.size());
             throw new IllegalArgumentException("BinaryExpression must have 2 unary expressions");
         }
         this.expressions = expressions;

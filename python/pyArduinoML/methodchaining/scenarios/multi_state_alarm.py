@@ -33,4 +33,6 @@ def scenario4():
 
 
 if __name__ == '__main__':
-    scenario4()
+    import sys
+    with open('../generated/scenario4.ino', 'w') as sys.stdout:
+        scenario4()

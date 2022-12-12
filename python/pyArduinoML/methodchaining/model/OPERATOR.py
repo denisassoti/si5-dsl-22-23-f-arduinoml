@@ -12,4 +12,4 @@ def value(operator):
         return "&&"
     if operator == OR:
         return "||"
-    return ""
+    return "op"

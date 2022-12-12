@@ -4,8 +4,8 @@ from model.State import State
 from model.Transition import Transition
 from TransitionBuilder import TransitionBuilder
 from StateActionBuilder import StateActionBuilder
-from UndefinedBrick import UndefinedBrick
-from UndefinedState import UndefinedState
+from StateBeepBuilder import StateBeepBuilder
+
 
 class StateBuilder:
     """
@@ -23,7 +23,9 @@ class StateBuilder:
         self.root = root
         self.state = state
         self.actions = []  # List[StateActionBuilder], builders for the state actions
+        self.beep_builder = None  # StateBeepBuilder, builder for the state beep
         self.transition = None  # TransitionBuilder, builder for the state transition (unique in the current meta-model)
+        self.beep_used = False
 
     def set(self, actuator):
         """
@@ -35,6 +37,27 @@ class StateBuilder:
         action = StateActionBuilder(self, actuator)
         self.actions = self.actions + [action]
         return action
+    
+    def beep(self, actuator):
+        if self.beep_used:
+            raise Exception("Beep already used in state " + self.state)
+        self.beep_used = True
+        self.root.beep_used()
+        builder = StateBeepBuilder(self, actuator)
+        self.beep_builder = builder
+        return builder
+    
+    def short(self):
+        self.beep_builder.short()
+        return self
+    
+    def long(self):
+        self.beep_builder.long()
+        return self
+    
+    def times(self, times):
+        self.beep_builder.times(times)
+        return self
 
     def when(self, sensor=None):
         """
@@ -47,6 +70,10 @@ class StateBuilder:
         self.transition = transition
         return transition
 
+    def used_remote(self):
+        self.root.remote_used()
+        return self.root
+
     def get_contents(self, bricks):
         """
         Builds the state (step 1)
@@ -58,7 +85,7 @@ class StateBuilder:
         A 2-step build is required (due to the meta-model) to get references right while avoiding bad typing tricks
         such as passing a TransitionBuilder instead of a Transition.
         """
-        return State(self.state, map(lambda builder: builder.get_contents(bricks), self.actions), None)
+        return State(self.state, map(lambda builder: builder.get_contents(bricks), self.actions), None, self.beep_builder)
 
     def get_contents2(self, bricks, states):
         """
@@ -74,14 +101,13 @@ class StateBuilder:
         A 2-step build is required (due to the meta-model) to get references right while avoiding bad typing tricks
         such as passing a TransitionBuilder instead of a Transition.
         """
-        if self.transition.sensor not in bricks.keys():
-            raise UndefinedBrick()
-        if self.state not in states.keys():
-            raise UndefinedState()
-        if self.transition.next_state not in states.keys():
-            raise UndefinedState()
-        transition = Transition(bricks[self.transition.sensor],
-                                self.transition.value,
-                                states[self.transition.next_state])
+        # if self.transition.sensor not in bricks.keys():
+        #     raise UndefinedBrick()
+        # if self.state not in states.keys():
+        #     raise UndefinedState()
+        # if self.transition.next_state not in states.keys():
+        #     raise UndefinedState()
+        transition = Transition(states[self.transition.next_state],
+                                self.transition.expression)
         states[self.state].transition = transition
 

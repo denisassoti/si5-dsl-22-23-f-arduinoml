@@ -26,4 +26,6 @@ def scenario3():
 
 
 if __name__ == '__main__':
-    scenario3()
+    import sys
+    with open('../generated/scenario3.ino', 'w') as sys.stdout:
+        scenario3()

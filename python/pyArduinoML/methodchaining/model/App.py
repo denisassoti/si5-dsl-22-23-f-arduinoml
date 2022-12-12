@@ -9,7 +9,7 @@ class App(NamedElement):
 
     """
 
-    def __init__(self, name, bricks=(), states=()):
+    def __init__(self, name, bricks=(), states=(), used_remote=False, used_beep=False):
         """
         Constructor.
 
@@ -21,6 +21,11 @@ class App(NamedElement):
         NamedElement.__init__(self, name)
         self.bricks = bricks
         self.states = states
+        self.used_remote = used_remote
+        self.used_beep = used_beep
+        if self.used_remote:
+            for state in self.states:
+                state.remote_used = True        
 
     def __repr__(self):
         """
@@ -41,8 +46,8 @@ int state = LOW; int prev = HIGH;
 long time = 0; long debounce = 200;
 
 %s
-void loop() { state_%s(); }""" % ("\n".join(map(lambda b: b.declare(), self.bricks)),
-                                  "\n".join(map(lambda b: b.setup(), self.bricks)),
+void loop() { state_%s(); }""" % ("\n".join(map(lambda b: b.declare(), self.bricks))+"%s%s" % ("\nchar incomingByte;" if self.used_remote else "", "\nint first = 1;" if self.used_beep else ""),
+                                  "\n".join(map(lambda b: b.setup(), self.bricks))+"%s" % ("\n\tSerial.begin(9600);" if self.used_remote else ""),
                                   "\n".join(map(lambda s: s.setup(), self.states)),
                                   self.states[0].name)
         return rtr

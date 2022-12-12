@@ -118,15 +118,15 @@ public interface ArduinomlListener extends ParseTreeListener {
 	 */
 	void exitInitial(ArduinomlParser.InitialContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ArduinomlParser#abstractExpression}.
+	 * Enter a parse tree produced by {@link ArduinomlParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx);
+	void enterExpression(ArduinomlParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ArduinomlParser#abstractExpression}.
+	 * Exit a parse tree produced by {@link ArduinomlParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitAbstractExpression(ArduinomlParser.AbstractExpressionContext ctx);
+	void exitExpression(ArduinomlParser.ExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ArduinomlParser#unaryExpression}.
 	 * @param ctx the parse tree
@@ -138,16 +138,6 @@ public interface ArduinomlListener extends ParseTreeListener {
 	 */
 	void exitUnaryExpression(ArduinomlParser.UnaryExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ArduinomlParser#binaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ArduinomlParser#binaryExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitBinaryExpression(ArduinomlParser.BinaryExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ArduinomlParser#temporalExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -157,4 +147,14 @@ public interface ArduinomlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ArduinomlParser#remoteExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterRemoteExpression(ArduinomlParser.RemoteExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ArduinomlParser#remoteExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitRemoteExpression(ArduinomlParser.RemoteExpressionContext ctx);
 }

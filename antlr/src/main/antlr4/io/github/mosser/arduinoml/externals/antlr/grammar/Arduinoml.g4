@@ -17,13 +17,13 @@ bricks          :   (sensor|actuator)+;
 states          :   state+;
     state       :   initial? name=IDENTIFIER '{'  action+ (transition+)? '}';
     action      :   receiver=IDENTIFIER '<=' value=SIGNAL;
-    transition  :   expression=abstractExpression '=>' next=IDENTIFIER ;
+    transition  :   exp=expression '=>' next=IDENTIFIER ;
     initial     :   '->';
 
-abstractExpression  :  unaryExpression | binaryExpression | temporalExpression;
+expression  :  unaryExpression | '('left=expression operator=OPERATOR right=expression')' |temporalExpression | remoteExpression;
 unaryExpression   :   trigger=IDENTIFIER 'is' value=SIGNAL;
-binaryExpression  :   left=unaryExpression operator=OPERATOR right=unaryExpression;
 temporalExpression :   'after' duration=INTEGER 'ms';
+remoteExpression: 'key' key=ALPHANUMERIC;
 
 /*****************
  ** Lexer rules **
@@ -33,8 +33,9 @@ PORT_NUMBER     :   [1-9] | '10' | '11' | '12';
 INTEGER         :   [0-9]+;
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE|DIGITS)+;
 SIGNAL          :   'HIGH' | 'LOW';
-OPERATOR         :   'AND' | 'OR';
-
+OPERATOR        :   'AND' | 'OR';
+// authorize ' in the name of the key
+ALPHANUMERIC    :   [a-zA-Z0-9_']+;
 
 /*************
  ** Helpers **

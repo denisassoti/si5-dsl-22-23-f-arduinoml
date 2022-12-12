@@ -9,7 +9,7 @@ class State(NamedElement):
 
     """
 
-    def __init__(self, name, actions=(), transition=None):
+    def __init__(self, name, actions=(), transition=None, beep=None):
         """
         Constructor.
 
@@ -21,6 +21,8 @@ class State(NamedElement):
         NamedElement.__init__(self, name)
         self.transition = transition
         self.actions = actions
+        self.beep = beep
+        self.remote_used = False
 
     def settransition(self, transition):
         """
@@ -41,11 +43,20 @@ class State(NamedElement):
         # generate code for state actions
         for action in self.actions:
             rtr += "\tdigitalWrite(%s, %s);\n" % (action.brick.name, SIGNAL.value(action.value))
-            rtr += "\tboolean guard =  millis() - time > debounce;\n"
+        rtr += "\tboolean guard =  millis() - time > debounce;\n"
+        if (self.beep):
+            rtr += "\tif (first){\n"
+            rtr += "\t\t"+ str(self.beep)+'\n'
+            rtr += "\t\tfirst = 0;\n"
+            rtr += "\t}\n"
+        if (self.remote_used):
+            rtr += "\tif (Serial.available() > 0) {\n"
+            rtr += "\t\tincomingByte = Serial.read();\n"
+            rtr += "\t}\n"
         # generate code for the transition
         transition = self.transition
-        rtr += "\tif (digitalRead(%s) == %s && guard) {\n\t\ttime = millis(); state_%s();\n\t} else {\n\t\tstate_%s();\n\t}" \
-               % (transition.sensor.name, SIGNAL.value(transition.value), transition.nextstate.name, self.name)
+        rtr += "\tif (%s && guard) {\n\t\t%stime = millis(); state_%s();\n\t} else {\n\t\tstate_%s();\n\t}" \
+               % (str(transition.expression), "first = 1; " if self.beep else "", transition.nextstate.name, self.name)
         # end of state
         rtr += "\n}\n"
         return rtr
