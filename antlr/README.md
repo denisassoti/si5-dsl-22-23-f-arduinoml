@@ -19,7 +19,7 @@ This is a quick and dirty implementation of the ArduinoML kernel, using the Java
 We consider here that the current directory is the `antlr` directory. 
 
   1. Make sure the ArduinoML JVM kernel is installed in your local maven repository
-    * `cd ../../kernels/jvm; mvn clean install`
+    * `cd ../kernel; mvn clean install`
   2. Then, compile the ANTLR code
     * `mvn clean package`
      3. Run the compiler using the `exec` plugin:
@@ -29,8 +29,6 @@ We consider here that the current directory is the `antlr` directory.
        * `mvn exec:java -Dexec.args="src/main/resources/scenario4.arduinoml"`
        * `mvn exec:java -Dexec.args="src/main/resources/scenario5_temporal.arduinoml"`
        * `mvn exec:java -Dexec.args="src/main/resources/scenario6_remotecommunication.arduinoml"`
-       * `mvn exec:java -Dexec.args="src/main/resources/test.arduinoml"`
-
     
 ## Code Description
 

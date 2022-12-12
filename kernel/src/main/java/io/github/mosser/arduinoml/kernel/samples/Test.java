@@ -56,9 +56,9 @@ public class Test {
 			exp1.setSensor(button1);
 			exp1.setValue(SIGNAL.HIGH);
 
-			UnaryExpression exp2 = new UnaryExpression();
-			exp2.setSensor(button2);
-			exp2.setValue(SIGNAL.HIGH);
+			TemporalExpression exp2 = new TemporalExpression();
+			exp2.setValue(500);
+
 
 			BinaryExpression exp3 = new BinaryExpression();
 			exp3.setExpressions(Arrays.asList(exp1, exp2));
@@ -101,8 +101,7 @@ public class Test {
 		Visitor codeGenerator = new ToWiring();
 		theDualCheckAlarm.accept(codeGenerator);
 
-		// generate the target code and write it into a file
-		codeGenerator.generateInoFile();
+		System.out.println(codeGenerator.getResult());
 	}
 
 }

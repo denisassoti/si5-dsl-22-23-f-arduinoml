@@ -73,8 +73,7 @@ public class Switch {
 		Visitor codeGenerator = new ToWiring();
 		theSwitch.accept(codeGenerator);
 
-		// generate the target code and write it into a file
-		codeGenerator.generateInoFile();
+		System.out.println(codeGenerator.getResult());
 	}
 
 }

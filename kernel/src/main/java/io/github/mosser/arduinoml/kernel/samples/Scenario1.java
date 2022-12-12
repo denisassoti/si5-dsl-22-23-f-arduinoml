@@ -89,8 +89,7 @@ public class Scenario1 {
 		Visitor codeGenerator = new ToWiring();
 		theSimpleAlarm.accept(codeGenerator);
 
-		// generate the target code and write it into a file
-		codeGenerator.generateInoFile();
+		System.out.println(codeGenerator.getResult());
 	}
 
 }

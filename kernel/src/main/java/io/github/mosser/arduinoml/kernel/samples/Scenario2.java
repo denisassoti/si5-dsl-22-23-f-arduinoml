@@ -56,41 +56,41 @@ public class Scenario2 {
 		// Creating transitions
 		Transition off2On = new Transition();
 		off2On.setNext(on);
-			UnaryExpression exp1 = new UnaryExpression();
-			exp1.setSensor(button1);
-			exp1.setValue(SIGNAL.HIGH);
+		UnaryExpression exp1 = new UnaryExpression();
+		exp1.setSensor(button1);
+		exp1.setValue(SIGNAL.HIGH);
 
-			UnaryExpression exp2 = new UnaryExpression();
-			exp2.setSensor(button2);
-			exp2.setValue(SIGNAL.HIGH);
+		UnaryExpression exp2 = new UnaryExpression();
+		exp2.setSensor(button2);
+		exp2.setValue(SIGNAL.HIGH);
 
-			BinaryExpression exp3 = new BinaryExpression();
-			exp3.setExpressions(Arrays.asList(exp1, exp2));
-			exp3.setOperator(OPERATOR.AND);
+		BinaryExpression exp3 = new BinaryExpression();
+		exp3.setExpressions(Arrays.asList(exp1, exp2));
+		exp3.setOperator(OPERATOR.AND);
 
-			UnaryExpression expr4 = new UnaryExpression();
-		    expr4.setSensor(button3);
-		    expr4.setValue(SIGNAL.HIGH);
+		UnaryExpression expr4 = new UnaryExpression();
+		expr4.setSensor(button3);
+		expr4.setValue(SIGNAL.HIGH);
 
-		    BinaryExpression expr5 = new BinaryExpression();
-		    expr5.setExpressions(Arrays.asList(exp3, expr4));
-		    expr5.setOperator(OPERATOR.OR);
+		BinaryExpression expr5 = new BinaryExpression();
+		expr5.setExpressions(Arrays.asList(exp3, expr4));
+		expr5.setOperator(OPERATOR.OR);
 
-		    off2On.setExpression(expr5);
+		off2On.setExpression(expr5);
 
 		Transition on2Off = new Transition();
 		on2Off.setNext(off);
-			UnaryExpression exp4 = new UnaryExpression();
-			exp4.setSensor(button1);
-			exp4.setValue(SIGNAL.LOW);
+		UnaryExpression exp4 = new UnaryExpression();
+		exp4.setSensor(button1);
+		exp4.setValue(SIGNAL.LOW);
 
-			UnaryExpression exp5 = new UnaryExpression();
-			exp5.setSensor(button2);
-			exp5.setValue(SIGNAL.LOW);
+		UnaryExpression exp5 = new UnaryExpression();
+		exp5.setSensor(button2);
+		exp5.setValue(SIGNAL.LOW);
 
-			BinaryExpression exp6 = new BinaryExpression();
-			exp6.setExpressions(Arrays.asList(exp4, exp5));
-			exp6.setOperator(OPERATOR.OR);
+		BinaryExpression exp6 = new BinaryExpression();
+		exp6.setExpressions(Arrays.asList(exp4, exp5));
+		exp6.setOperator(OPERATOR.OR);
 
 		on2Off.setExpression(exp6);
 
@@ -109,9 +109,8 @@ public class Scenario2 {
 		Visitor codeGenerator = new ToWiring();
 		theDualCheckAlarm.accept(codeGenerator);
 
-		// generate the target code and write it into a file
 		System.out.println(codeGenerator.getResult());
-		//codeGenerator.generateInoFile();
+
 	}
 
 }

@@ -58,16 +58,9 @@ public class Scenario5_temporal {
 		t2.setNext(off);
 
 			TemporalExpression exp2 = new TemporalExpression();
-			exp2.setValue(10000);
+			exp2.setValue(800);
 
-			UnaryExpression exp3 = new UnaryExpression();
-			exp3.setSensor(button);
-			exp3.setValue(SIGNAL.HIGH);
-
-			BinaryExpression exp4 = new BinaryExpression();
-			exp4.setExpressions(Arrays.asList(exp3, exp2));
-			exp4.setOperator(OPERATOR.AND);
-		t2.setExpression(exp4);
+		t2.setExpression(exp2);
 
 		// Binding transitions to states
 		off.setTransitions(Arrays.asList(t1));
@@ -84,10 +77,8 @@ public class Scenario5_temporal {
 		Visitor codeGenerator = new ToWiring();
 		theSimpleAlarm.accept(codeGenerator);
 
-		// generate the target code and write it into a file
-
 		System.out.println(codeGenerator.getResult());
-		//codeGenerator.generateInoFile();
+
 	}
 
 }

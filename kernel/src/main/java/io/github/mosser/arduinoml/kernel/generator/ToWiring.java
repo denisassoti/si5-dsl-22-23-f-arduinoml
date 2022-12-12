@@ -215,25 +215,29 @@ public class ToWiring extends Visitor<StringBuffer> {
 				else if (transition.getExpression() instanceof BinaryExpression) {
 					//if each expression is a unary expression
 					BinaryExpression binaryExpression = (BinaryExpression) transition.getExpression();
-					for (Expression expression : binaryExpression.getExpressions()) {
-						if(expression instanceof UnaryExpression || expression instanceof BinaryExpression){
-							continue;
-						}	else {
-							return;
-						}
-					}
+					Expression left = binaryExpression.getExpressions().get(0);
+					Expression right = binaryExpression.getExpressions().get(1);
 
-					String sensorName = getBinaryDeepestUnaryExpression((BinaryExpression) transition.getExpression()).getSensor().getName();
+					if(left instanceof UnaryExpression && right instanceof UnaryExpression){
+						String sensorName = getBinaryDeepestUnaryExpression((BinaryExpression) transition.getExpression()).getSensor().getName();
 
-					w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
+						w(String.format("\t\t\t%sBounceGuard = millis() - %sLastDebounceTime > debounce;\n",
 								sensorName, sensorName));
 
-					w(String.format("\t\t\tif (%sBounceGuard && ", sensorName));
+						w(String.format("\t\t\tif (%sBounceGuard && ", sensorName));
 						transition.getExpression().accept(this);
 						w(String.format(") {\n" +
 								"\t\t\t\t%sLastDebounceTime = millis();\n" +
 								"\t\t\t\tcurrentState = %s;\n" +
 								"\t\t\t}\n", sensorName, transition.getNext().getName()));
+					}
+					//if one of right and is temporal expression and one of them is unary expression
+					/*else if((left instanceof UnaryExpression && right instanceof TemporalExpression) ||
+							(left instanceof TemporalExpression && right instanceof UnaryExpression)){
+						UnaryExpression unaryExpression = (left instanceof UnaryExpression) ? (UnaryExpression) left : (UnaryExpression) right;
+						String sensorName = unaryExpression.getSensor().getName();
+
+					}*/
 				}
 			}
 			return;
