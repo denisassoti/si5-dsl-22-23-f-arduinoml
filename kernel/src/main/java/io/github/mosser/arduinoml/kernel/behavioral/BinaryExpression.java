@@ -23,9 +23,6 @@ public class BinaryExpression implements Expression {
         }
         this.expressions = expressions;
     }
-    public OPERATOR getOperator() {
-        return operator;
-    }
 
     public void setOperator(OPERATOR operator) {
         this.operator = operator;

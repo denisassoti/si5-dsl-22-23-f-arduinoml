@@ -25,7 +25,6 @@ public class StateBuilder {
 
     public AppBuilder endState() {
         parent.theApp.getStates().add(this.local);
-        return parent;
-    }
+        return parent; }
 
 }

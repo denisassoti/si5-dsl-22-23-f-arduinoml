@@ -1,5 +1,6 @@
 package io.github.mosser.arduinoml.embedded.java.dsl;
 
+import io.github.mosser.arduinoml.kernel.behavioral.BinaryExpression;
 import io.github.mosser.arduinoml.kernel.behavioral.State;
 import io.github.mosser.arduinoml.kernel.behavioral.Transition;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
@@ -12,18 +13,19 @@ public class TransitionTableBuilder {
     private Map<String, State> states;
     private Map<String, Sensor> sensors;
 
+
     TransitionTableBuilder(AppBuilder parent, Map<String, State> states, Map<String, Sensor> sensors) {
         this.parent = parent;
         this.states = states;
         this.sensors = sensors;
     }
 
-    public ExpressionBuilder from(String state) {
+    public TransitionBuilder from(String state) {
         TransitionBuilder builder = new TransitionBuilder(this, state);
-        ExpressionBuilder expressionBuilder = new ExpressionBuilder(builder);
-
-        return expressionBuilder;//kikikikkikiikikiki
+        return builder;
     }
+
+
 
 
     public AppBuilder endTransitionTable() {

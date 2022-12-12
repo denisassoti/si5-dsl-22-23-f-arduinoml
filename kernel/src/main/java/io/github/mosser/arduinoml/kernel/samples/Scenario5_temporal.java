@@ -75,7 +75,9 @@ public class Scenario5_temporal {
 		theSimpleAlarm.accept(codeGenerator);
 
 		// generate the target code and write it into a file
-		codeGenerator.generateInoFile();
+
+		System.out.println(codeGenerator.getResult());
+		//codeGenerator.generateInoFile();
 	}
 
 }

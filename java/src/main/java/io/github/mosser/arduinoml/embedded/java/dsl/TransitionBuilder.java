@@ -1,11 +1,7 @@
 package io.github.mosser.arduinoml.embedded.java.dsl;
 
 
-import io.github.mosser.arduinoml.kernel.behavioral.Expression;
-import io.github.mosser.arduinoml.kernel.behavioral.State;
-import io.github.mosser.arduinoml.kernel.behavioral.Transition;
-import io.github.mosser.arduinoml.kernel.behavioral.UnaryExpression;
-import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
+import io.github.mosser.arduinoml.kernel.behavioral.*;
 
 public class TransitionBuilder {
 
@@ -14,47 +10,41 @@ public class TransitionBuilder {
 
     private Transition local;
 
-    private ExpressionBuilder expression;
+    private Expression expression;
 
     private State state;
 
+    ExpressionBuilder unaryExprBuilder;
+    BinaryExpressionBuilder binaryExpression;
 
     TransitionBuilder(TransitionTableBuilder parent, String source) {
         this.parent = parent;
-        //this.local = new Transition();
-        //parent.findState(source).setTransition(local);
+        this.local = new Transition();
+        parent.findState(source).addTransition(local);
         this.state = parent.findState(source);
-
     }
 
-
-    public ExpressionBuilder when(String sensor) {
-        ExpressionBuilder expressionBuilder = new ExpressionBuilder(null);
-      //ajouter une expression avec un sensor, il va manquer le HIGH on reviendra
-        ExpressionBuilder unaryExpr = expressionBuilder.createUnaryExpressionWithSensor(parent.findSensor(sensor),local,parent);
-
-        return unaryExpr;
+    public ExpressionBuilder startTmp(){
+        this.unaryExprBuilder = new ExpressionBuilder(this);
+        return unaryExprBuilder;
     }
 
-   /* public TransitionBuilder when(String sensor) {
-        ExpressionBuilder expressionBuilder =new ExpressionBuilder();
-        Expression unaryExpr = expressionBuilder.createUnaryExpressionWithSensor(parent.findSensor(sensor));
-
-        local.setSensor(parent.findSensor(sensor));
-        return this;
+    public ExpressionBuilder startUnary(){
+        this.unaryExprBuilder = new ExpressionBuilder(this);
+        return unaryExprBuilder;
     }
 
-    public TransitionBuilder isHigh() {
-        local.setValue(SIGNAL.HIGH);
-        return this;
+    public BinaryExpressionBuilder startBinary(){
+        this.binaryExpression = new BinaryExpressionBuilder(this);
+        return binaryExpression;
     }
 
-    public TransitionBuilder isLow() {
-        local.setValue(SIGNAL.LOW);
-        return this;
-    }*/
+    public void setExpression(Expression expression){
+        this.expression = expression;
+    }
 
     public TransitionTableBuilder goTo(String state) {
+        local.setExpression(this.expression);
         local.setNext(parent.findState(state));
         return parent;
     }

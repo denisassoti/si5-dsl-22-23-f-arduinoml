@@ -21,6 +21,10 @@ public class Scenario2 {
 		button1.setName("button1");
 		button1.setPin(9);
 
+		Sensor button3 = new Sensor();
+		button1.setName("button3");
+		button1.setPin(11);
+
 		Sensor button2 = new Sensor();
 		button2.setName("button2");
 		button2.setPin(10);
@@ -64,7 +68,15 @@ public class Scenario2 {
 			exp3.setExpressions(Arrays.asList(exp1, exp2));
 			exp3.setOperator(OPERATOR.AND);
 
-		off2On.setExpression(exp3);
+			UnaryExpression expr4 = new UnaryExpression();
+		    expr4.setSensor(button3);
+		    expr4.setValue(SIGNAL.HIGH);
+
+		    BinaryExpression expr5 = new BinaryExpression();
+		    expr5.setExpressions(Arrays.asList(exp3, expr4));
+		    expr5.setOperator(OPERATOR.OR);
+
+		    off2On.setExpression(expr5);
 
 		Transition on2Off = new Transition();
 		on2Off.setNext(off);
@@ -98,7 +110,8 @@ public class Scenario2 {
 		theDualCheckAlarm.accept(codeGenerator);
 
 		// generate the target code and write it into a file
-		codeGenerator.generateInoFile();
+		System.out.println(codeGenerator.getResult());
+		//codeGenerator.generateInoFile();
 	}
 
 }
