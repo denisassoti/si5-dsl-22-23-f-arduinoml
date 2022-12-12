@@ -11,18 +11,15 @@ def scenario5():
     from AppBuilder import AppBuilder
     from model.SIGNAL import HIGH, LOW
 
-    app = AppBuilder("Scenario1") \
+    app = AppBuilder("Scenario5") \
         .sensor("BUTTON").on_pin(9) \
         .actuator("LED").on_pin(12) \
-        .actuator("BUZZER").on_pin(11) \
         .state("off") \
-            .set("LED").to(LOW) \
-            .set("BUZZER").to(LOW) \
-            .when().after(1000).go_to_state("on") \
+        .set("LED").to(LOW) \
+        .when("BUTTON").has_value(HIGH).go_to_state("on") \
         .state("on") \
-            .set("LED").to(HIGH) \
-            .set("BUZZER").to(HIGH) \
-            .when().after(2000).go_to_state("off") \
+        .set("LED").to(HIGH) \
+        .when().after(800).go_to_state("off")\
         .get_contents()
 
     print(app)

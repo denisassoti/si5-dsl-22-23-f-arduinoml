@@ -2,13 +2,11 @@
 
 int BUTTON = 9;
 int LED = 12;
-int BUZZER = 11;
 char incomingByte;
 
 void setup() {
 	pinMode(BUTTON, INPUT);
 	pinMode(LED, OUTPUT);
-	pinMode(BUZZER, OUTPUT);
 	Serial.begin(9600);
 }
 
@@ -17,12 +15,11 @@ long time = 0; long debounce = 200;
 
 void state_off() {
 	digitalWrite(LED, LOW);
-	digitalWrite(BUZZER, LOW);
 	boolean guard =  millis() - time > debounce;
 	if (Serial.available() > 0) {
 		incomingByte = Serial.read();
 	}
-	if ((incomingByte == 'a' || incomingByte == 'A') && guard) {
+	if (((incomingByte == 'a' || incomingByte == 'A') || digitalRead(BUTTON) == HIGH) && guard) {
 		time = millis(); state_on();
 	} else {
 		state_off();
@@ -31,12 +28,11 @@ void state_off() {
 
 void state_on() {
 	digitalWrite(LED, HIGH);
-	digitalWrite(BUZZER, HIGH);
 	boolean guard =  millis() - time > debounce;
 	if (Serial.available() > 0) {
 		incomingByte = Serial.read();
 	}
-	if ((incomingByte == 'b' || incomingByte == 'B') && guard) {
+	if ((incomingByte == 'e' || incomingByte == 'E') && guard) {
 		time = millis(); state_off();
 	} else {
 		state_on();

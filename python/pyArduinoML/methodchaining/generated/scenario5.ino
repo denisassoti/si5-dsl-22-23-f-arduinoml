@@ -2,12 +2,10 @@
 
 int BUTTON = 9;
 int LED = 12;
-int BUZZER = 11;
 
 void setup() {
 	pinMode(BUTTON, INPUT);
 	pinMode(LED, OUTPUT);
-	pinMode(BUZZER, OUTPUT);
 }
 
 int state = LOW; int prev = HIGH;
@@ -15,9 +13,8 @@ long time = 0; long debounce = 200;
 
 void state_off() {
 	digitalWrite(LED, LOW);
-	digitalWrite(BUZZER, LOW);
 	boolean guard =  millis() - time > debounce;
-	if ((millis() - time > 1000) && guard) {
+	if (digitalRead(BUTTON) == HIGH && guard) {
 		time = millis(); state_on();
 	} else {
 		state_off();
@@ -26,9 +23,8 @@ void state_off() {
 
 void state_on() {
 	digitalWrite(LED, HIGH);
-	digitalWrite(BUZZER, HIGH);
 	boolean guard =  millis() - time > debounce;
-	if ((millis() - time > 2000) && guard) {
+	if ((millis() - time > 800) && guard) {
 		time = millis(); state_off();
 	} else {
 		state_on();

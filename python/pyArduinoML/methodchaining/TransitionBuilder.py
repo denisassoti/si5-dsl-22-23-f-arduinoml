@@ -9,6 +9,7 @@ from model.BinaryExpression import BinaryExpression
 from model.UnaryExpression import UnaryExpression
 from ExpressionBuilder import ExpressionBuilder
 
+
 class TransitionBuilder:
     """
     Builder for transitions.
@@ -38,16 +39,16 @@ class TransitionBuilder:
         self.value = value
         self.expression.has_value(value)
         return self
-    
-    def both(self, sensor):
+
+    def both(self, sensor=None):
         return self.expression.both(sensor)
 
-    def either(self, sensor):
+    def either(self, sensor=None):
         return self.expression.either(sensor)
-    
+
     def and_(self):
         return self.expression.and_()
-    
+
     def or_(self):
         return self.expression.or_()
 
@@ -56,7 +57,7 @@ class TransitionBuilder:
 
     def used_remote(self):
         self.root.used_remote()
-        
+
     def after(self, time):
         return self.expression.after(time)
 
