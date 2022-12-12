@@ -4,5 +4,5 @@ declare -a arr=("beep_alarm.py" "dual_check_alarm.py" "multi_state_alarm.py" "re
 
 for i in "${arr[@]}"
 do
-  py.exe $i
+  python $i
 done

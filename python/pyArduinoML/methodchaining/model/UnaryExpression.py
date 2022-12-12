@@ -9,6 +9,9 @@ class UnaryExpression(Expression) :
         self.sensor = sensor
         self.signal = signal
     
+    def get_sensors(self):
+        return [self.sensor]
+    
     def __str__(self):
         return "digitalRead(%s) == %s" % (self.sensor, value(self.signal))
     

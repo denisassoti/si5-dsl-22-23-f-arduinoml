@@ -111,3 +111,15 @@ class BinaryExpression(Expression):
             self.right.after(time)
         if self.right is None and self == initial:
             self.right = TemporalExpression(time)
+
+    def get_sensors(self):
+        sensors = []
+        if self.left is not None and type(self.left) is UnaryExpression:
+            sensors.append(self.left.sensor)
+        if self.left is not None and type(self.left) is BinaryExpression:
+            sensors.extend(self.left.get_sensors())
+        if self.right is not None and type(self.right) is BinaryExpression:
+            sensors.extend(self.right.get_sensors())
+        if self.right is not None and type(self.right) is UnaryExpression:
+            sensors.append(self.right.sensor)
+        return sensors

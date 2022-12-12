@@ -102,11 +102,15 @@ class StateBuilder:
         such as passing a TransitionBuilder instead of a Transition.
         """
         # if self.transition.sensor not in bricks.keys():
-        #     raise UndefinedBrick()
-        # if self.state not in states.keys():
-        #     raise UndefinedState()
-        # if self.transition.next_state not in states.keys():
-        #     raise UndefinedState()
+        #     raise Exception("Undefined brick " + self.transition.sensor)
+        transition_sensors = self.transition.expression.get_sensors()
+        for sensor in transition_sensors:
+            if sensor not in bricks.keys():
+                raise Exception("Undefined brick " + sensor)
+        if self.state not in states.keys():
+            raise Exception("Undefined state " + self.state)
+        if self.transition.next_state not in states.keys():
+            raise Exception("Undefined state " + self.transition.next_state)
         transition = Transition(states[self.transition.next_state],
                                 self.transition.expression)
         states[self.state].transition = transition

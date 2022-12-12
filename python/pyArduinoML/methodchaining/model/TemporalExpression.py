@@ -16,3 +16,6 @@ class TemporalExpression(Expression) :
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, TemporalExpression):
             return self.key == __o.key
+
+    def get_sensors(self):
+        return []

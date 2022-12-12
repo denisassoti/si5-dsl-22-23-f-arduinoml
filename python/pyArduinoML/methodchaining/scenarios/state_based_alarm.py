@@ -27,5 +27,5 @@ def scenario3():
 
 if __name__ == '__main__':
     import sys
-    with open('../generated/scenario3.ino', 'w') as sys.stdout:
+    with open('../generated/state_based_alarm.ino', 'w') as sys.stdout:
         scenario3()

@@ -30,5 +30,5 @@ def scenario7():
 
 if __name__ == '__main__':
     import sys
-    with open('../generated/scenario7.ino', 'w') as sys.stdout:
+    with open('../generated/beep_alarm.ino', 'w') as sys.stdout:
         scenario7()

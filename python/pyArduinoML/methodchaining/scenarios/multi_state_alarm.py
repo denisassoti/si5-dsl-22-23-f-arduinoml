@@ -34,5 +34,5 @@ def scenario4():
 
 if __name__ == '__main__':
     import sys
-    with open('../generated/scenario4.ino', 'w') as sys.stdout:
+    with open('../generated/multi_state_alarm.ino', 'w') as sys.stdout:
         scenario4()

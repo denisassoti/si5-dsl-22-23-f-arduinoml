@@ -16,3 +16,6 @@ class KeyExpression(Expression) :
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, KeyExpression):
             return self.key == __o.key
+    
+    def get_sensors(self):
+        return []

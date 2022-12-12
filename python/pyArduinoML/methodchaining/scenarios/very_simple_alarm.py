@@ -30,5 +30,5 @@ def scenario1():
 
 if __name__ == '__main__':
     import sys
-    with open('../generated/scenario1.ino', 'w') as sys.stdout:
+    with open('../generated/very_simple_alarm.ino', 'w') as sys.stdout:
         scenario1()

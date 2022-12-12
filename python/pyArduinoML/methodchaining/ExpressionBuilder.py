@@ -78,7 +78,15 @@ class ExpressionBuilder:
         else:
             self.expression.after(time)
         return self
-                
+
+    def get_sensors(self):
+        if type(self.expression) is UnaryExpression:
+            return [self.expression.sensor]
+        elif type(self.expression) is BinaryExpression:
+            return self.expression.left.get_sensors() + self.expression.right.get_sensors()
+        else :
+            return []
+
     def __str__(self) -> str:
         return str(self.expression)
 
