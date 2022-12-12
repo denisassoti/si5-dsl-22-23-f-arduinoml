@@ -5,6 +5,7 @@ import io.github.mosser.arduinoml.kernel.behavioral.*;
 import io.github.mosser.arduinoml.kernel.generator.ToWiring;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.Actuator;
+import io.github.mosser.arduinoml.kernel.structural.OPERATOR;
 import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
 import io.github.mosser.arduinoml.kernel.structural.Sensor;
 
@@ -55,9 +56,18 @@ public class Scenario5_temporal {
 
 		Transition  t2 = new Transition();
 		t2.setNext(off);
+
 			TemporalExpression exp2 = new TemporalExpression();
 			exp2.setValue(10000);
-		t2.setExpression(exp2);
+
+			UnaryExpression exp3 = new UnaryExpression();
+			exp3.setSensor(button);
+			exp3.setValue(SIGNAL.HIGH);
+
+			BinaryExpression exp4 = new BinaryExpression();
+			exp4.setExpressions(Arrays.asList(exp3, exp2));
+			exp4.setOperator(OPERATOR.AND);
+		t2.setExpression(exp4);
 
 		// Binding transitions to states
 		off.setTransitions(Arrays.asList(t1));

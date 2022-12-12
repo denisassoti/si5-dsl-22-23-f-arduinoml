@@ -20,11 +20,10 @@ states          :   state+;
     transition  :   exp=expression '=>' next=IDENTIFIER ;
     initial     :   '->';
 
-expression  :  unaryExpression | '('left=expression operator=OPERATOR right=expression')' |temporalExpression;
+expression  :  unaryExpression | '('left=expression operator=OPERATOR right=expression')' |temporalExpression | remoteExpression;
 unaryExpression   :   trigger=IDENTIFIER 'is' value=SIGNAL;
-//binaryExpression  :   left=abstractExpression operator=OPERATOR right=unaryExpression;
-//binaryExpression  :   operator=OPERATOR (left=abstractExpression ',' right=unaryExpression;
 temporalExpression :   'after' duration=INTEGER 'ms';
+remoteExpression: 'key' key=ALPHANUMERIC;
 
 /*****************
  ** Lexer rules **
@@ -35,7 +34,8 @@ INTEGER         :   [0-9]+;
 IDENTIFIER      :   LOWERCASE (LOWERCASE|UPPERCASE|DIGITS)+;
 SIGNAL          :   'HIGH' | 'LOW';
 OPERATOR        :   'AND' | 'OR';
-
+// authorize ' in the name of the key
+ALPHANUMERIC    :   [a-zA-Z0-9_']+;
 
 /*************
  ** Helpers **

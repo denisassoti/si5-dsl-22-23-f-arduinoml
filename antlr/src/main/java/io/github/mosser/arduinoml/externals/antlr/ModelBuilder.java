@@ -44,7 +44,7 @@ public class ModelBuilder extends ArduinomlBaseListener {
     private Transition currentTransition = null;
     private String nextStateName = null;
 
-   // private List<Expression> currentExpression = new ArrayList<>();
+    // private List<Expression> currentExpression = new ArrayList<>();
 
     /**************************
      ** Listening mechanisms **
@@ -151,20 +151,6 @@ public class ModelBuilder extends ArduinomlBaseListener {
         } else {
             currentExpressions[1] = expression;
         }
-
-       /*  if(ctx.getParent() instanceof ArduinomlParser.AbstractExpressionContext) {
-             this.currentTransition.setExpression(getUnaryExpression(ctx));
-         }*/
-
-         //this.currentExpression.add(getUnaryExpression(ctx));
-
-       /*  if (ctx.getParent().getChild(0) == ctx) {
-             this.currentExpressions[0] = getUnaryExpression(ctx);
-         } else {
-             this.currentExpressions[1] = getUnaryExpression(ctx);
-         }*/
-
-        System.out.println("enterUnaryExpression " + ctx.getText());
     }
 
     public Expression getExpression(ArduinomlParser.ExpressionContext ctx){
@@ -186,37 +172,11 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
     @Override
     public void enterExpression(ArduinomlParser.ExpressionContext ctx) {
-      /*  if(ctx.operator != null) {
-            //this is a binary expression
-            //BinaryExpression binaryExpression = new BinaryExpression();
-            //binaryExpression.setOperator(OPERATOR.valueOf(ctx.operator.getText()));
-            //binaryExpression.setExpressions(Arrays.asList(getExpression(ctx.left), getExpression(ctx.right)));
-            //this.currentExpression.add(binaryExpression);
-            this.currentExpression.add(getExpression(ctx.left));
-            this.currentExpression.add(getExpression(ctx.right));
-        }else {
-            //this is a unary expression or temporal expression
-            if(ctx.temporalExpression()!= null){
-                this.currentExpression.add(getTemporalExpression(ctx.temporalExpression()));
-            }
-            if (ctx.unaryExpression() != null) {
-                this.currentExpression.add(getUnaryExpression(ctx.unaryExpression()));
-            }
-        }*/
-
-        System.out.println("enter expression " + ctx.getText());
 
     }
 
     @Override
     public void exitExpression(ArduinomlParser.ExpressionContext ctx) {
-
-        if (this.currentExpressions[0] !=null){
-            System.out.println("currentExpressions[0] " + this.currentExpressions[0].toString());
-        }
-        if (this.currentExpressions[1] !=null){
-            System.out.println("currentExpressions[1] " + this.currentExpressions[1].toString());
-        }
 
         if (ctx.getParent() instanceof ArduinomlParser.TransitionContext) {
             if (ctx.operator == null) {
@@ -251,6 +211,18 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
 
     @Override
+    public void enterRemoteExpression(ArduinomlParser.RemoteExpressionContext ctx) {
+        RemoteExpression remoteExpression = new RemoteExpression();
+        remoteExpression.setValue(ctx.key.getText().charAt(1));
+
+        if (currentExpressions[0] == null) {
+            currentExpressions[0] = remoteExpression;
+        } else {
+            currentExpressions[1] = remoteExpression;
+        }
+    }
+
+    @Override
     public void enterTemporalExpression(ArduinomlParser.TemporalExpressionContext ctx) {
         TemporalExpression temporalExpression = new TemporalExpression();
         temporalExpression.setValue(Integer.parseInt(ctx.duration.getText()));
@@ -260,8 +232,6 @@ public class ModelBuilder extends ArduinomlBaseListener {
         } else {
             currentExpressions[1] = temporalExpression;
         }
-        System.out.println("enter temporal expression " + ctx.getText());
-
     }
 
     @Override
@@ -270,4 +240,3 @@ public class ModelBuilder extends ArduinomlBaseListener {
     }
 
 }
-
