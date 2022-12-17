@@ -17,12 +17,12 @@ def scenario7():
         .actuator("BUZZER").on_pin(11) \
         .state("off") \
             .set("LED").to(LOW) \
-            .beep("BUZZER").short().times(1).long().times(1) \
+            .beep("BUZZER").short().times(3) \
             .when("BUTTON").has_value(HIGH).go_to_state("on") \
         .state("on") \
             .set("LED").to(HIGH) \
-            .beep("BUZZER").short().times(2).long().times(1) \
-            .when("BUTTON").has_value(HIGH).go_to_state("off") \
+            .beep("BUZZER").long().times(1) \
+            .exit() \
         .get_contents()
 
     print(app)

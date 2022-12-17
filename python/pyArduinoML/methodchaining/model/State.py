@@ -55,8 +55,11 @@ class State(NamedElement):
             rtr += "\t}\n"
         # generate code for the transition
         transition = self.transition
-        rtr += "\tif (%s && guard) {\n\t\t%stime = millis(); state_%s();\n\t} else {\n\t\tstate_%s();\n\t}" \
-               % (str(transition.expression), "first = 1; " if self.beep else "", transition.nextstate.name, self.name)
+        if transition : 
+            rtr += "\tif (%s && guard) {\n\t\t%stime = millis(); state_%s();\n\t} else {\n\t\tstate_%s();\n\t}" \
+                % (str(transition.expression), "first = 1; " if self.beep else "", transition.nextstate.name, self.name)
+        else:
+            rtr += "\texit(0);"
         # end of state
         rtr += "\n}\n"
         return rtr

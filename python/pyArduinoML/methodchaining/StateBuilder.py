@@ -70,6 +70,10 @@ class StateBuilder:
         self.transition = transition
         return transition
 
+    def exit(self):
+        return self.root
+
+
     def used_remote(self):
         self.root.remote_used()
         return self.root
@@ -103,6 +107,8 @@ class StateBuilder:
         """
         # if self.transition.sensor not in bricks.keys():
         #     raise Exception("Undefined brick " + self.transition.sensor)
+        if self.transition is None:
+            return
         transition_sensors = self.transition.expression.get_sensors()
         for sensor in transition_sensors:
             if sensor not in bricks.keys():

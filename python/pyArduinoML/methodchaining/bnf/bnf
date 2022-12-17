@@ -1,0 +1,53 @@
+<app> ::= <app_name> "=" <app_builder> "\\" <new_line> <app_content>
+<app_name> ::= <identifier>
+<app_builder> ::= "AppBuilder(\"" <identifier> "\")" <space>
+<app_content> ::= <brick>+ <state>+ <get_content>
+<brick> ::= <indent> (<sensor> | <actuator>)
+<sensor> ::= ".sensor(\"" <location>
+<actuator> ::= ".actuator(\"" <location> 
+<location> ::= <identifier> "\").on_pin(" <port> ") \\" <new_line>
+<port> ::= [1-9] | "10" | "11" | "12" 
+
+<state> ::= <indent> <state_name> <state_content>
+<state_name> ::= ".state(\"" <identifier> "\") \\" <new_line>
+<state_content> ::= <action>+ <beep>? <transition>
+<action> ::= <indent> <indent> ".set(\"" <identifier> "\").to(" <high_low> ") \\" <new_line>
+<high_low> ::= "LOW" | "HIGH"
+<beep> ::= <indent> <indent> ".beep(\"" <identifier> "\")" <beep_state>+ " \\" <new_line>
+<beep_state> ::= (<short_beep> | <long_beep>)
+<short_beep> ::= ".short()" <beep_number>
+<long_beep> ::= ".long()" <beep_number>
+<beep_number> ::= ".times(" <non_zero_digit> ")"
+
+<transition> ::= <terminal_transition> | <non_terminal_transition>+
+<terminal_transition> ::= <indent> <indent> <no_transition> " \\" <new_line>
+<non_terminal_transition> ::= <indent> <indent> (<unary_transition> | <binary_transition> | <remote_transition> | <temporal_transition>) <to_state> <new_line>
+<unary_transition> ::= ".when(\"" <identifier> "\")" <has_value>
+<binary_transition> ::= ".when()" <expression> 
+<expression> ::= ((<both> | <both_leaf>) (<and> | <and_leaf>)) | ((<either> | <either_leaf>) (<or> | <or_leaf>))
+<both> ::= ".both()" <expression>
+<both_leaf> ::= (".both(\"" <identifier> "\")" <has_value>) | (".both()" (<remote_transition> | <temporal_transition>))
+<and> ::= ".and_()" <expression>
+<and_leaf> ::= (".and_(\"" <identifier> "\")" <has_value>) | (".and_()" (<remote_transition> | <temporal_transition>))
+
+<either> ::= ".either()" <expression>
+<either_leaf> ::= (".either(\"" <identifier> "\")" <has_value>) | (".either()" (<remote_transition> | <temporal_transition>))
+<or> ::= ".or_()" <expression>
+<or_leaf> ::= (".or_(\"" <identifier> "\")" <has_value>) | (".or_()" (<remote_transition> | <temporal_transition>))
+
+<remote_transition> ::= ".key(\"" <letter> "\")" 
+<temporal_transition> ::= ".after(" <non_zero_digit> <digit>* ")"
+<no_transition> ::= ".exit()"
+<has_value> ::= ".has_value(" <high_low> ")"
+<to_state> ::= ".go_to_state(\"" <identifier> "\") \\"
+
+<get_content> ::= <indent> ".get_contents()"
+
+
+<identifier> ::= <letter>  ( <letter> | <digit> )*
+<letter> ::= [a-z] | [A-Z] 
+<space> ::= " "
+<new_line> ::= "\n"
+<indent> ::= "\t"
+<digit> ::= [0-9]
+<non_zero_digit> ::= [1-9]
