@@ -80,6 +80,7 @@ public class Scenario2 {
 
 		Transition on2Off = new Transition();
 		on2Off.setNext(off);
+
 		UnaryExpression exp4 = new UnaryExpression();
 		exp4.setSensor(button1);
 		exp4.setValue(SIGNAL.LOW);

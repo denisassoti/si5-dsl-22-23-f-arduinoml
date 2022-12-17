@@ -56,8 +56,9 @@ public class Test {
 			exp1.setSensor(button1);
 			exp1.setValue(SIGNAL.HIGH);
 
-			TemporalExpression exp2 = new TemporalExpression();
-			exp2.setValue(500);
+			UnaryExpression exp2 = new UnaryExpression();
+			exp1.setSensor(button2);
+			exp1.setValue(SIGNAL.HIGH);
 
 
 			BinaryExpression exp3 = new BinaryExpression();
@@ -66,29 +67,10 @@ public class Test {
 
 		off2On.setExpression(exp3);
 
-		Transition on2Off = new Transition();
-		on2Off.setNext(off);
-			UnaryExpression exp4 = new UnaryExpression();
-			exp4.setSensor(button1);
-			exp4.setValue(SIGNAL.LOW);
 
-			UnaryExpression exp5 = new UnaryExpression();
-			exp5.setSensor(button2);
-			exp5.setValue(SIGNAL.LOW);
-
-			BinaryExpression exp6 = new BinaryExpression();
-			exp6.setExpressions(Arrays.asList(exp4, exp5));
-			exp6.setOperator(OPERATOR.OR);
-
-			BinaryExpression exp7 = new BinaryExpression();
-			exp7.setExpressions(Arrays.asList(exp6, exp6));
-			exp7.setOperator(OPERATOR.AND);
-
-		on2Off.setExpression(exp7);
 
 		// Binding transitions to states
 		off.setTransitions(Arrays.asList(off2On));
-		on.setTransitions(Arrays.asList(on2Off));
 
 		// Building the App
 		App theDualCheckAlarm = new App();

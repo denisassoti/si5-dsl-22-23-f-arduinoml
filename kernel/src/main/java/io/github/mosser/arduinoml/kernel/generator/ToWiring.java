@@ -152,10 +152,15 @@ public class ToWiring extends Visitor<StringBuffer> {
 			for (Action action : state.getActions()) {
 				action.accept(this);
 			}
-			for (Transition transition : state.getTransitions()) {
-				transition.accept(this);
+			if (state.getTransitions().size() == 0) {
+				w("\t\t\texit(0);\n");
+			}else {
+				for (Transition transition : state.getTransitions()) {
+					transition.accept(this);
+				}
+				w("\t\tbreak;\n");
 			}
-			w("\t\tbreak;\n");
+
 			return;
 		}
 
